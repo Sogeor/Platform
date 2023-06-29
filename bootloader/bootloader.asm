@@ -6,8 +6,9 @@ section .text
 
 extern bootloader_main
 
-bios_data: ; BIOS may store some data here
-    times 90 db 0
+first_stage_start:
+
+bios_data: times 90 db 0
 
 first_entry: jmp 0x00:.setup
 .setup:
@@ -23,8 +24,7 @@ first_entry: jmp 0x00:.setup
     mov [disk], dl
     cld
 
-    ; Print message
-
+%ifdef bootloader_disk_reading_requirement
     mov si, msg_disk_reading
     call x16_prefixed_println
 
