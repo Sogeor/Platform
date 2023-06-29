@@ -33,50 +33,69 @@ entry: ; Bootloader entry point
 
     ; Print message
 
-    mov si, msg_hello
-    call println16
+    mov si, msg_disk_reading
+    call x16_prefixed_println
 
 .loop:
     hlt
     jmp .loop
 
-println16: ; Real mode println
-
+x16_println:
     push si
-    call print16
+    call x16_print
     mov si, msg_println
-    call print16
+    call x16_print
     pop si
     ret
 
-print16: ; Real mode print
-
+x16_print:
     push ax
     push cx
     push si
     mov cx, word [si]
     add si, 2
 
-.string_loop:
-
+.loop:
     lodsb
     mov ah, 0x0E
     int 0x10
-    loop .string_loop, cx
+    loop .loop, cx
     pop si
     pop cx
     pop ax
     ret
 
+x16_prefixed_println:
+    push si
+    mov si, msg_prefix
+    call x16_print
+    pop si
+    call x16_println
+    ret
+
+x16_prefixed_print:
+    push si
+    mov si, msg_prefix
+    call x16_print
+    pop si
+    call x16_print
+    ret
+
 disk db 0x80
 
-msg_hello: ; Hello message string
+msg_prefix:
+    dw 13
+    db '[Bootloader] '
 
-    dw 26
-    db 'Sogeor.Platform Bootloader'
+msg_disk_reading:
+    dw 16
+    db 'Reading the disk'
 
-msg_println: ; New line string
+msg_disk_reading_error:
+    dw 36
+    db 'An error occurred while reading disk'
 
+msg_println:
     dw 2
     db 13, 10 ; "\r\n"
 
