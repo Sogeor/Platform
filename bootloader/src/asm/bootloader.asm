@@ -6,11 +6,11 @@ section .text
 
 extern bootloader_main
 
-first_stage_start:
+real_x16_bios_data:
 
-bios_data: times 90 db 0
+times 90 db 0
 
-first_entry: jmp 0x00:.setup
+real_x16_entry: jmp 0x00:.setup
 .setup:
     xor ax, ax
     mov ds, ax
@@ -19,33 +19,31 @@ first_entry: jmp 0x00:.setup
     mov gs, ax
     mov ss, ax
 
-    mov sp, first_entry
+    mov sp, real_x16_entry
 
     mov [disk], dl
     cld
 
-%ifdef bootloader_disk_reading_requirement
-    mov si, msg_disk_reading
-    call x16_prefixed_println
+    mov si, real_x16_msg_sectors_reading
+    call real_x16_prefixed_println
+    call real_x16_read_sectors
 
+    mov si, real_x16_msg_jumping_to_read_sectors
+    call real_x16_prefixed_println
+    jmp real_x16_entrance
+
+real_x16_read_sectors:
+.setup:
     xor dx, dx
     mov ax, 1
-    mov cx, (bootloader_size - (first_stage_end - first_stage_start)) / 512
-    mov bx, second_stage_start
-    call x16_read_disk
-%endif
-
-    mov si, msg_jumping_to_second_stage
-    call x16_prefixed_println
-    jmp second_entry
-
-x16_read_disk:
+    mov cx, (bootloader_size - (real_x16_entrance - real_x16_bios_data)) / 512
+    mov bx, real_x16_entrance
 .start:
     cmp cx, 127
     jbe .reading
     pusha
     mov cx, 127
-    call x16_read_disk
+    call real_x16_read_sectors
     popa
     add eax, 127
     add dx, 127 * 512 / 16
@@ -63,18 +61,10 @@ x16_read_disk:
     jc .error
     ret
 .error:
-    mov si, msg_disk_reading_error
-    call x16_prefixed_println
+    mov si, real_x16_msg_sectors_reading_error
+    call real_x16_prefixed_println
 
-x16_println:
-    push si
-    call x16_print
-    mov si, msg_separator
-    call x16_print
-    pop si
-    ret
-
-x16_print:
+real_x16_print:
     push ax
     push cx
     push si
@@ -90,83 +80,75 @@ x16_print:
     pop ax
     ret
 
-x16_prefixed_println:
+real_x16_prefixed_print:
     push si
-    mov si, msg_prefix
-    call x16_print
+    mov si, real_x16_msg_prefix
+    call real_x16_print
     pop si
-    call x16_println
+    call real_x16_print
     ret
 
-x16_prefixed_print:
+real_x16_println:
+    call real_x16_print
     push si
-    mov si, msg_prefix
-    call x16_print
+    mov si, bios_line_separator
+    call real_x16_print
     pop si
-    call x16_print
+    ret
+
+real_x16_prefixed_println:
+    call real_x16_prefixed_print
+    push si
+    mov si, bios_line_separator
+    call real_x16_print
+    pop si
     ret
 
 disk db 0x80
 
 global dap
-dap:
-    db 0x10
+dap: db 0x10
     db 0
 
 global dap_sectors_number
-dap_sectors_number:
-    dw 0
+dap_sectors_number: dw 0
 
 global dap_buffer_offset
-dap_buffer_offset:
-    dw 0
+dap_buffer_offset: dw 0
 
 global dap_buffer_segment
-dap_buffer_segment:
-    dw 0
+dap_buffer_segment: dw 0
 
 global dap_lba_lower
-dap_lba_lower:
-    dd 0
+dap_lba_lower: dd 0
 
 global dap_lba_upper
-dap_lba_upper:
-    dd 0
+dap_lba_upper: dd 0
 
-msg_prefix:
-    dw 13
-    db '[Bootloader] '
-
-msg_separator:
-    dw 2
+bios_line_separator: dw 2
     db 13, 10
 
-msg_disk_reading:
-    dw 16
-    db 'Reading the disk'
+real_x16_msg_prefix: dw 11
+    db '[real/x16] '
 
-msg_disk_reading_error:
-    dw 22
+real_x16_msg_sectors_reading: dw 15
+    db 'Reading sectors'
+
+real_x16_msg_sectors_reading_error: dw 22
     db 'Unable to read sectors'
 
-msg_jumping_to_second_stage:
-    dw 27
-    db 'Jumping to the second stage'
+real_x16_msg_jumping_to_read_sectors: dw 23
+    db 'Jumping to read sectors'
 
 times 510 - ($ - $$) db 0
-
 dw 0xAA55
 
-first_stage_end:
-
-second_stage_start:
-
-second_entry:
+real_x16_entrance:
     cli
     push ds
     push es
     mov si, msg_enabling_a20
-    call x16_prefixed_println
+    call real_x16_prefixed_println
     call enable_a20
     lgdt [gdtr]
     mov eax, cr0
@@ -228,11 +210,11 @@ check_a20:
     test ax, ax
     jnz .a20_enabled
     mov si, a20_status_disabled
-    call x16_prefixed_println
+    call real_x16_prefixed_println
     ret
 .a20_enabled:
     mov si, a20_status_enabled
-    call x16_prefixed_println
+    call real_x16_prefixed_println
     ret
 a20_status_enabled:  dw 19
                      db 'A20 Status: ENABLED'
