@@ -129,7 +129,7 @@ bios_line_separator: dw 2
     db 13, 10
 
 real_x16_msg_prefix: dw 11
-    db '[real/x16] '
+    db '[real_x16] '
 
 real_x16_msg_sectors_reading: dw 15
     db 'Reading sectors'
