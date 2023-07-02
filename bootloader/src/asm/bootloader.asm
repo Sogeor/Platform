@@ -98,7 +98,7 @@ x16_real_prefixed_print:
 x16_real_println:
     call x16_real_print
     push si
-    mov si, x16_real_msg_separator
+    mov si, x16_real_bios_line_separator
     call x16_real_print
     pop si
     ret
@@ -106,7 +106,7 @@ x16_real_println:
 x16_real_prefixed_println:
     call x16_real_prefixed_print
     push si
-    mov si, x16_real_msg_separator
+    mov si, x16_real_bios_line_separator
     call x16_real_print
     pop si
     ret
@@ -122,7 +122,7 @@ x16_real_dap_buffer_segment: dw 0
 x16_real_dap_lba_lower: dd 0
 x16_real_dap_lba_upper: dd 0
 
-x16_real_msg_separator: db 13, 10, 0
+x16_real_bios_line_separator: db 13, 10, 0
 x16_real_msg_prefix: db '[real_x16] ', 0
 x16_real_msg_entrance_sectors_reading: db 'Reading entrance sectors', 0
 x16_real_msg_entrance_sectors_reading_error: db 'Unable to read entrance sectors', 0
