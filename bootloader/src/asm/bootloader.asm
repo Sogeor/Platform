@@ -6,11 +6,16 @@ section .text
 
 extern bootloader_main
 
-real_x16_bios_data:
+global x16_real_dap_size
+global x16_real_dap_reserved
+global x16_real_dap_number_of_sectors
+global x16_real_dap_buffer_offset
+global x16_real_dap_buffer_segment
+global x16_real_dap_lba_lower
+global x16_real_dap_lba_upper
 
-times 90 db 0
-
-real_x16_entry: jmp 0x00:.setup
+x16_real_bios_data: times 90 db 0
+x16_real_entry: jmp 0x00:.setup
 .setup:
     xor ax, ax
     mov ds, ax
@@ -18,137 +23,120 @@ real_x16_entry: jmp 0x00:.setup
     mov fs, ax
     mov gs, ax
     mov ss, ax
-
-    mov sp, real_x16_entry
-
+    mov sp, x16_real_entry
     mov [disk], dl
     cld
+.read_entrance_sectors:
+    mov ax, (bootloader_size - 512) / 512
+    mov bx, x16_real_entrance
+    xor cx, cx
+    mov edx, 1
+    mov si, x16_real_msg_entrance_sectors_reading
+    call x16_real_prefixed_println
+    call x16_real_read_sectors
+    jc .read_entrance_sectors_error
+.jump_to_read_entrance_sectors:
+    mov si, x16_real_msg_jumping_to_read_entrance_sectors
+    call x16_real_prefixed_println
+    jmp x16_real_entrance
+.read_entrance_sectors_error:
+    mov si, x16_real_msg_entrance_sectors_reading_error
+    call x16_real_prefixed_println
+.loop:
+    hlt
+    jmp .loop
 
-    mov si, real_x16_msg_sectors_reading
-    call real_x16_prefixed_println
-    call real_x16_read_sectors
-
-    mov si, real_x16_msg_jumping_to_read_sectors
-    call real_x16_prefixed_println
-    jmp real_x16_entrance
-
-real_x16_read_sectors:
+x16_real_read_sectors:
 .setup:
-    xor dx, dx
-    mov ax, 1
-    mov cx, (bootloader_size - (real_x16_entrance - real_x16_bios_data)) / 512
-    mov bx, real_x16_entrance
-.start:
-    cmp cx, 127
+    cmp ax, 127
     jbe .reading
-    pusha
-    mov cx, 127
-    call real_x16_read_sectors
-    popa
-    add eax, 127
-    add dx, 127 * 512 / 16
-    sub cx, 127
-    jmp .start
+    push ax
+    mov ax, 127
+    call x16_real_read_sectors
+    jc .ret
+    pop ax
+    sub ax, 127
+    add cx, 127 * 512 / 16
+    add edx, 127
+    jmp .setup
+.ret:
+    ret
 .reading:
-    mov [dap_lba_lower], ax
-    mov [dap_sectors_number], cx
-    mov [dap_buffer_segment], dx
-    mov [dap_buffer_offset], bx
+    mov [x16_real_dap_number_of_sectors], ax
+    mov [x16_real_dap_buffer_offset], bx
+    mov [x16_real_dap_buffer_segment], cx
+    mov [x16_real_dap_lba_lower], edx
     mov dl, [disk]
-    mov si, dap
+    mov si, x16_real_dap
     mov ah, 0x42
     int 0x13
-    jc .error
     ret
-.error:
-    mov si, real_x16_msg_sectors_reading_error
-    call real_x16_prefixed_println
 
-real_x16_print:
+x16_real_print:
     push ax
-    push cx
     push si
-    mov cx, word [si]
-    add si, 2
+    mov ah, 0xE
 .loop:
     lodsb
-    mov ah, 0x0E
+    cmp al, 0
+    je .end
     int 0x10
-    loop .loop, cx
+    jmp .loop
+.end:
     pop si
-    pop cx
     pop ax
     ret
 
-real_x16_prefixed_print:
+x16_real_prefixed_print:
     push si
-    mov si, real_x16_msg_prefix
-    call real_x16_print
+    mov si, x16_real_msg_prefix
+    call x16_real_print
     pop si
-    call real_x16_print
+    call x16_real_print
     ret
 
-real_x16_println:
-    call real_x16_print
+x16_real_println:
+    call x16_real_print
     push si
-    mov si, bios_line_separator
-    call real_x16_print
+    mov si, x16_real_msg_separator
+    call x16_real_print
     pop si
     ret
 
-real_x16_prefixed_println:
-    call real_x16_prefixed_print
+x16_real_prefixed_println:
+    call x16_real_prefixed_print
     push si
-    mov si, bios_line_separator
-    call real_x16_print
+    mov si, x16_real_msg_separator
+    call x16_real_print
     pop si
     ret
 
 disk db 0x80
 
-global dap
-dap: db 0x10
-    db 0
+x16_real_dap:
+x16_real_dap_size: db 16
+x16_real_dap_reserved: db 0
+x16_real_dap_number_of_sectors: dw 0
+x16_real_dap_buffer_offset: dw 0
+x16_real_dap_buffer_segment: dw 0
+x16_real_dap_lba_lower: dd 0
+x16_real_dap_lba_upper: dd 0
 
-global dap_sectors_number
-dap_sectors_number: dw 0
-
-global dap_buffer_offset
-dap_buffer_offset: dw 0
-
-global dap_buffer_segment
-dap_buffer_segment: dw 0
-
-global dap_lba_lower
-dap_lba_lower: dd 0
-
-global dap_lba_upper
-dap_lba_upper: dd 0
-
-bios_line_separator: dw 2
-    db 13, 10
-
-real_x16_msg_prefix: dw 11
-    db '[real_x16] '
-
-real_x16_msg_sectors_reading: dw 15
-    db 'Reading sectors'
-
-real_x16_msg_sectors_reading_error: dw 22
-    db 'Unable to read sectors'
-
-real_x16_msg_jumping_to_read_sectors: dw 23
-    db 'Jumping to read sectors'
+x16_real_msg_separator: db 13, 10, 0
+x16_real_msg_prefix: db '[real_x16] ', 0
+x16_real_msg_entrance_sectors_reading: db 'Reading entrance sectors', 0
+x16_real_msg_entrance_sectors_reading_error: db 'Unable to read entrance sectors', 0
+x16_real_msg_jumping_to_read_entrance_sectors: db 'Jumping to read entrance sectors', 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55
 
-real_x16_entrance:
+x16_real_entrance:
     cli
     push ds
     push es
     mov si, msg_enabling_a20
-    call real_x16_prefixed_println
+    call x16_real_prefixed_println
     call enable_a20
     lgdt [gdtr]
     mov eax, cr0
@@ -174,14 +162,11 @@ unreal:
     mov ax, 0x4F00
     int 0x10
     call bootloader_main
-
 .loop:
     hlt
     jmp .loop
 
-msg_enabling_a20:
-    dw 21
-    db 'Enabling the A20 line'
+msg_enabling_a20: db 'Enabling the A20 line', 0
 
 enable_a20:
     call check_a20
@@ -210,16 +195,14 @@ check_a20:
     test ax, ax
     jnz .a20_enabled
     mov si, a20_status_disabled
-    call real_x16_prefixed_println
+    call x16_real_prefixed_println
     ret
 .a20_enabled:
     mov si, a20_status_enabled
-    call real_x16_prefixed_println
+    call x16_real_prefixed_println
     ret
-a20_status_enabled:  dw 19
-                     db 'A20 Status: ENABLED'
-a20_status_disabled: dw 20
-                     db 'A20 Status: DISABLED'
+a20_status_enabled: db 'A20 Status: ENABLED', 0
+a20_status_disabled: db 'A20 Status: DISABLED', 0
 
 check_a20_16:
     pushf
@@ -411,7 +394,7 @@ bits 16
 .read_disk:
     mov ah, 0x42
     mov dl, [disk]
-    mov si, dap
+    mov si, x16_real_dap ;dap
     int 0x13
     jmp .done
 .query_mode:
