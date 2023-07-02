@@ -83,6 +83,8 @@ void protected_panic(const char* msg) {
 //    memcpy(target, disk_space, 2048);
 //}
 
+__asm__(".code16gcc");
+
 void bootloader_main() {
     real_println("daroy");
     //enter_protected_mode();
