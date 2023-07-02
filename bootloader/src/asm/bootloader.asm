@@ -35,8 +35,8 @@ x16_real_entry: jmp 0x00:.setup
     call x16_real_prefixed_println
     call x16_real_read_sectors
     jc .read_entrance_sectors_error
-.jump_to_read_entrance_sectors:
-    mov si, x16_real_msg_jumping_to_read_entrance_sectors
+.jump_to_entrance_sectors:
+    mov si, x16_real_msg_jumping_to_entrance_sectors
     call x16_real_prefixed_println
     jmp x16_real_entrance
 .read_entrance_sectors_error:
@@ -53,13 +53,13 @@ x16_real_read_sectors:
     push ax
     mov ax, 127
     call x16_real_read_sectors
-    jc .ret
+    jc .error
     pop ax
     sub ax, 127
     add cx, 127 * 512 / 16
     add edx, 127
     jmp .setup
-.ret:
+.error:
     ret
 .reading:
     mov [x16_real_dap_number_of_sectors], ax
@@ -79,10 +79,10 @@ x16_real_print:
 .loop:
     lodsb
     cmp al, 0
-    je .end
+    je .free
     int 0x10
     jmp .loop
-.end:
+.free:
     pop si
     pop ax
     ret
@@ -126,7 +126,7 @@ x16_real_bios_line_separator: db 13, 10, 0
 x16_real_msg_prefix: db '[real_x16] ', 0
 x16_real_msg_entrance_sectors_reading: db 'Reading entrance sectors', 0
 x16_real_msg_entrance_sectors_reading_error: db 'Unable to read entrance sectors', 0
-x16_real_msg_jumping_to_read_entrance_sectors: db 'Jumping to read entrance sectors', 0
+x16_real_msg_jumping_to_entrance_sectors: db 'Jumping to entrance sectors', 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55
@@ -135,14 +135,22 @@ x16_real_entrance:
     cli
     push ds
     push es
-    mov si, msg_enabling_a20
+    mov si, x16_real_msg_trying_to_enable_the_a20_line
     call x16_real_prefixed_println
-    call enable_a20
+    call x16_real_try_to_enable_the_a20_line
+    cmp ax, 0
+    jne .the_a20_line_is_not_enabled
+.continue:
     lgdt [gdtr]
     mov eax, cr0
     or al, 1
     mov cr0, eax
     jmp pmode
+.the_a20_line_is_not_enabled:
+    push si
+    mov si, x16_real_msg_correct_behavior_with_the_disabled_a20_line_is_not_guaranteed
+    call x16_real_prefixed_println
+    jmp .continue
 
 pmode:
     mov bx, 0x10
@@ -166,68 +174,131 @@ unreal:
     hlt
     jmp .loop
 
-msg_enabling_a20: db 'Enabling the A20 line', 0
+x16_real_msg_trying_to_enable_the_a20_line: db 'Trying to enable the A20 line', 0
+x16_real_msg_the_a20_line_already_enabled: db 'The A20 line already enabled', 0
+x16_real_msg_the_a20_line_is_enabled_using_the_bios: db 'The A20 line is enabled using the BIOS', 0
+x16_real_msg_the_a20_line_enabling_is_not_supported_using_the_bios: db 'The A20 line enabling is not supported using the BIOS', 0
+x16_real_msg_could_not_get_the_a20_line_status_using_the_bios: db 'Could not get the A20 line status using the BIOS', 0
+x16_real_msg_the_a20_line_could_not_be_enabled_using_the_bios: db 'The A20 line could not be enabled using the BIOS', 0
+x16_real_msg_the_a20_line_is_enabled_using_the_keyboard_controller: db 'The A20 line is enabled using the keyboard controller', 0
+x16_real_msg_the_a20_line_is_enabled_using_the_fast_gate: db 'The A20 line is enabled using the fast gate', 0
+x16_real_msg_the_a20_line_could_not_be_enabled_using_the_fast_gate: db 'The A20 line could not be enabled using the fast gate', 0
+x16_real_msg_failed_to_enable_the_a20_line: db 'Failed to enable the A20 line', 0
+x16_real_msg_correct_behavior_with_the_disabled_a20_line_is_not_guaranteed: db 'Correct behavior with the disabled A20 line is not guaranteed', 0
 
-enable_a20:
-    call check_a20
-    test ax, ax
-    jnz .done
-    call enable_a20_bios
-    call check_a20
-    test ax, ax
-    jnz .done
-    call enable_a20_keyboard_controller
-    call check_a20
-    test ax, ax
-    jnz .done
-    call enable_a20_io
-    call check_a20
-    test ax, ax
-    jnz .done
-.loop:
-    hlt
-    jmp .loop
-.done:
-    ret
-
-check_a20:
-    call check_a20_16
-    test ax, ax
-    jnz .a20_enabled
-    mov si, a20_status_disabled
+x16_real_try_to_enable_the_a20_line:
+    call x16_real_check_the_a20_line
+    jne .already_enabled
+.try_enable_using_the_bios:
+    call x16_real_try_enable_the_a20_line_using_the_bios
+    cmp ax, 0
+    je .enabled_using_the_bios
+    cmp ax, 1
+    je .not_supported_using_the_bios
+    cmp ax, 2
+    je .could_not_get_status_using_the_bios
+    cmp ax, 3
+    je .already_enabled_using_the_bios
+.could_not_enable_using_the_bios:
+    push si
+    mov si, x16_real_msg_the_a20_line_could_not_be_enabled_using_the_bios
     call x16_real_prefixed_println
-    ret
-.a20_enabled:
-    mov si, a20_status_enabled
+    pop si
+.try_enable_using_the_keyboard_controller:
+    call x16_real_try_enable_the_a20_line_using_the_keyboard_controller
+    call x16_real_check_the_a20_line
+    jne .enabled_using_the_keyboard_controller
+.try_enable_using_the_fast_gate:
+    call x16_real_try_enable_the_a20_line_using_the_fast_gate
+    call x16_real_check_the_a20_line
+    jne .enabled_using_the_fast_gate
+.not_enabled_using_the_fast_gate:
+    push si
+    mov si, x16_real_msg_the_a20_line_could_not_be_enabled_using_the_fast_gate
     call x16_real_prefixed_println
+    pop si
+.not_enabled:
+    push si
+    mov si, x16_real_msg_failed_to_enable_the_a20_line
+    call x16_real_prefixed_println
+    pop si
+    mov ax, 1
     ret
-a20_status_enabled: db 'A20 Status: ENABLED', 0
-a20_status_disabled: db 'A20 Status: DISABLED', 0
+.already_enabled:
+    push si
+    mov si, x16_real_msg_the_a20_line_already_enabled
+    call x16_real_prefixed_println
+    pop si
+    jmp .enabled
+.enabled_using_the_bios:
+    call x16_real_check_the_a20_line
+    je .try_enable_using_the_keyboard_controller
+    push si
+    mov si, x16_real_msg_the_a20_line_already_enabled
+    call x16_real_prefixed_println
+    pop si
+    jmp .enabled
+.not_supported_using_the_bios:
+    push si
+    mov si, x16_real_msg_the_a20_line_enabling_is_not_supported_using_the_bios
+    call x16_real_prefixed_println
+    pop si
+    jmp .try_enable_using_the_keyboard_controller
+.could_not_get_status_using_the_bios:
+    push si
+    mov si, x16_real_msg_could_not_get_the_a20_line_status_using_the_bios
+    call x16_real_prefixed_println
+    pop si
+    jmp .try_enable_using_the_keyboard_controller
+.already_enabled_using_the_bios:
+    call x16_real_check_the_a20_line
+    je .try_enable_using_the_keyboard_controller
+    jmp .already_enabled
+.enabled_using_the_keyboard_controller:
+    push si
+    mov si, x16_real_msg_the_a20_line_is_enabled_using_the_keyboard_controller
+    call x16_real_prefixed_println
+    pop si
+    jmp .enabled
+.enabled_using_the_fast_gate:
+    call x16_real_check_the_a20_line
+    je .not_enabled_using_the_fast_gate
+    push si
+    mov si, x16_real_msg_the_a20_line_is_enabled_using_the_fast_gate
+    call x16_real_prefixed_println
+    pop si
+.enabled:
+    mov ax, 0
+    ret
 
-check_a20_16:
-    pushf
+x16_real_check_the_a20_line:
+.setup:
+    cli
     push ds
     push es
     push di
     push si
-    cli
     xor ax, ax
     mov es, ax
     not ax
     mov ds, ax
-    mov di, 0x0500
-    mov si, 0x0510
+    mov di, 0x500
+    mov si, 0x510
     mov dl, byte [es:di]
     push dx
     mov dl, byte [ds:si]
     push dx
-    mov byte [es:di], 0x00
+    mov byte [es:di], 0
     mov byte [ds:si], 0xFF
+.compare:
     cmp byte [es:di], 0xFF
+    je .disabled
+.enabled:
     mov ax, 0
-    je .a20_disabled
+    jmp .free
+.disabled:
     mov ax, 1
-.a20_disabled:
+.free:
     pop dx
     mov byte [ds:si], dl
     pop dx
@@ -236,85 +307,97 @@ check_a20_16:
     pop di
     pop es
     pop ds
-    popf
     sti
     ret
 
-enable_a20_bios:
+x16_real_try_enable_the_a20_line_using_the_bios:
+.check_support:
     mov ax, 0x2403
     int 0x15
-    jb .failed
+    jb .not_supported
     cmp ah, 0
-    jnz .failed
+    jnz .not_supported
+.try_get_status:
     mov ax, 0x2402
     int 0x15
-    jb .failed
+    jb .could_not_get_status
     cmp ah, 0
-    jnz .failed
+    jnz .could_not_get_status
     cmp al, 1
-    jz .done
+    jz .already_enabled
+.try_enable:
     mov ax, 0x2401
-    int 0x14
-    jb .failed
+    int 0x15
+    jb .could_not_enable
     cmp ah, 0
-    jnz .failed
-.done:
-    mov ax, 1
-    ret
-.failed:
+    jnz .could_not_enable
+.enabled:
     mov ax, 0
     ret
-
-disable_a20_bios:
-    mov ax, 0x2400
-    int 0x15
+.not_supported:
+    mov ax, 1
+    ret
+.could_not_get_status:
+    mov ax, 2
+    ret
+.already_enabled:
+    mov ax, 3
+    ret
+.could_not_enable:
+    mov ax, 4
     ret
 
-enable_a20_keyboard_controller:
+x16_real_disable_the_a20_line_using_the_bios:
+    push ax
+    mov ax, 0x2400
+    int 0x15
+    pop ax
+    ret
+
+x16_real_try_enable_the_a20_line_using_the_keyboard_controller:
     cli
-    call a20_wait1
+    call .wait
     mov al, 0xAD
     out 0x64, al
-    call a20_wait1
+    call .wait
     mov al, 0xD0
     out 0x64, al
-    call a20_wait2
+    call .co_wait
     in al, 0x60
     push eax
-    call a20_wait1
+    call .wait
     mov al, 0xD1
     out 0x64, al
-    call a20_wait1
+    call .wait
     pop eax
     or al, 2
     out 0x60, al
-    call a20_wait1
+    call .wait
     mov al, 0xAE
     out 0x64, al
-    call a20_wait1
+    call .wait
     sti
     ret
-
-a20_wait1:
+.wait:
     in al, 0x64
     test al, 2
-    jnz a20_wait1
+    jnz .wait
     ret
-
-a20_wait2:
+.co_wait:
     in al, 0x64
     test al, 1
-    jz a20_wait2
+    jz .co_wait
     ret
 
-enable_a20_io:
+x16_real_try_enable_the_a20_line_using_the_fast_gate:
     in al, 0x92
     test al, 2
-    jnz .done
+    jnz .free
     or al, 2
     and al, 0xFE
     out 0x92, al
-.done:
+    jmp .free
+.free:
     ret
 
 global ask_drive_params
