@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "bios.h"
+
 void bootloader_main();
 
 // deprecated
