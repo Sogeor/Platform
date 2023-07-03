@@ -9,7 +9,7 @@ entry:
     mov [disk], dl
     cld
     mov ax, (bootloader_size - 512) / 512
-    mov bx, x16_real_entrance
+    mov bx, entrance
     xor cx, cx
     mov edx, 1
     mov si, LATE_SECTORS_READING
