@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-extern volatile uint8_t x16_realdap_size;
+extern volatile uint8_t dap_size;
 extern volatile uint8_t dap_reserved;
 extern volatile uint32_t dap_number_of_sectors;
 extern volatile uint32_t dap_buffer_offset;
