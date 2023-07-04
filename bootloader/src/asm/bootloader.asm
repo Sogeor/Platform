@@ -28,7 +28,7 @@ entrance:
     cmp ax, 0
     jnz .a20_line_is_not_enabled
 .continue:
-    lgdt [gdtr]
+    lgdt [gdt]
     mov eax, cr0
     or al, 1
     mov cr0, eax
@@ -63,6 +63,8 @@ unreal:
     jmp .loop
 
 %include "src/asm/a20_line.asm"
+
+%include "src/asm/gdt.asm"
 
 global ask_drive_params
 ask_drive_params:
@@ -161,7 +163,7 @@ bits 16
     cli
     xor ax, ax
     mov ds, ax
-    lgdt [gdtr]
+    lgdt [gdt]
     mov eax, cr0
     or eax, 1
     mov cr0, eax
@@ -185,50 +187,6 @@ bits 32
     pop ebp
     ret
 
-align 8,  db 0
-gdtr:     dw gdt_end - gdt_base - 1
-          dd gdt_base
-gdt_base: dd 0 ; null descriptor
-          dd 0
-
-          dw 0xFFFF
-          dw 0
-          db 0
-          db 0x9A
-          db 0xCF
-          db 0
-
-          dw 0xFFFF
-          dw 0
-          db 0
-          db 0x92
-          db 0xCF
-          db 0
-          dw 0xFFFF
-
-          dw 0
-          db 0
-          db 0x9E
-          db 0
-          db 0
-          dw 0xFFFF
-          dw 0
-          db 0
-          db 0x92
-          db 0
-          db 0
-gdt_end:
-
-;x32_protected_gdtr: dw 0
-;    dd 0
-;
-;x32_protected_gdt:
-;x32_protected_gdt_null_descriptor: dd 0
-;    dd 0
-;x32_protected_gdt_null_descriptor: dd 0
-;    dd 0
-
-align 4, db 0
 global drive_params
 drive_params: dw 0x1A
               dw 0
