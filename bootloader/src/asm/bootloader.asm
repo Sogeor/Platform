@@ -62,7 +62,7 @@ unreal:
     hlt
     jmp .loop
 
-%include "src/asm/a20.asm"
+%include "src/asm/a20_line.asm"
 
 global ask_drive_params
 ask_drive_params:
