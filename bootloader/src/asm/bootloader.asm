@@ -6,7 +6,7 @@ section .text
 
 times 90 db 0
 
-jmp 0:entry
+jmp 0x0:entry
 
 %include "src/asm/early.asm"
 
