@@ -25,11 +25,7 @@ i686-elf-gcc -T linker.ld $objects -o build/i686/bootloader.bin -nostdlib
 
 # bootloader.asm > bootloader.asm.bin
 
-bootloader_size=$(wc -c < build/i686/bootloader.bin)
-if [[ $((bootloader_size % 512)) != 0 ]]; then
-  bootloader_size=$((bootloader_size + 512))
-fi
-printf "%%define bootloader_size %s" $bootloader_size > build/include.asm
+./include.sh
 nasm -felf src/asm/bootloader.asm -o build/i686/bootloader.asm.bin
 
 # bootloader.asm.bin & bootloader.c.o > bootloader.bin
