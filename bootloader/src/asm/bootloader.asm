@@ -24,22 +24,21 @@ entrance:
     cli
     push ds
     push es
-    mov si, x16_real_msg_trying_to_enable_the_a20_line
-    call println
-    call x16_real_try_to_enable_the_a20_line
+    call prepare_a20_line
     cmp ax, 0
-    jne .the_a20_line_is_not_enabled
+    jnz .a20_line_is_not_enabled
 .continue:
     lgdt [gdtr]
     mov eax, cr0
     or al, 1
     mov cr0, eax
     jmp pmode
-.the_a20_line_is_not_enabled:
-    push si
+.a20_line_is_not_enabled:
     mov si, x16_real_msg_correct_behavior_with_the_disabled_a20_line_is_not_guaranteed
     call println
     jmp .continue
+
+x16_real_msg_correct_behavior_with_the_disabled_a20_line_is_not_guaranteed: db 'Correct behavior with the disabled A20 line is not guaranteed', 0
 
 pmode:
     mov bx, 0x10
