@@ -1,11 +1,11 @@
-#include "bios.h"
+#include "print.h"
 
-asm(".code16gcc");
+__asm__(".code16gcc");
 
 void x16_real_print_c(const char c) {
-    asm volatile("mov $0xE, %%ah\n"
-                 "mov %0, %%al\n"
-                 "int $0x10" :: ""(c));
+    __asm__ __volatile__("mov $0xE, %%ah\n"
+                         "mov %0, %%al\n"
+                         "int $0x10"::""(c));
 }
 
 void x16_real_prefixed_print_c(const char c) {

@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "bios.h"
+#include "print.h"
 
 void bootloader_main();
 
