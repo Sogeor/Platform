@@ -1,0 +1,6 @@
+.idea
+bootloader/build
+bootloader/bios/build
+bootloader/uefi/build
+build
+kernel/build
