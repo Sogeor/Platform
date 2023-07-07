@@ -1,0 +1,1 @@
+# Sogeor Platform UEFI Bootloader
