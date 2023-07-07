@@ -8,7 +8,7 @@ entry:
     mov sp, entry
     mov [disk], dl
     cld
-    mov ax, (bootloader_size - 512) / 512
+    mov ax, INCLUDE_NUMBER_OF_LATE_SECTORS
     mov bx, entrance
     xor cx, cx
     mov edx, 1
