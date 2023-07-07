@@ -1,4 +1,6 @@
-.PHONY: clean setup i686-clean i686-setup i686-bootloader i686-kernel i686-launch i686 x86_64-clean x86_64-setup x86_64-bootloader x86_64-kernel x86_64-launch x86_64
+.PHONY: all clean setup i686-clean i686-setup i686-bootloader i686-kernel i686-launch i686 x86_64-clean x86_64-setup x86_64-bootloader x86_64-kernel x86_64-launch x86_64
+
+all: i686 x86_64
 
 clean:
 	rm -rf build
@@ -8,8 +10,6 @@ clean:
 setup:
 	set -e
 	mkdir -p build
-	make -C bootloader/bios setup
-	make -C kernel setup
 
 i686-clean:
 	rm -rf build/i686
