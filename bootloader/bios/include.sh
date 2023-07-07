@@ -1,9 +1,9 @@
 #!/bin/bash
 
 set -e
-
-bootloader_size=$(wc -c < build/i686/bootloader.bin)
-if [[ $((bootloader_size % 512)) != 0 ]]; then
-  bootloader_size=$((bootloader_size + 512))
+BOOTLOADER_SIZE=$(wc -c < build/i686/asm/bootloader.bin)
+if [[ $((BOOTLOADER_SIZE % 512)) == 0 ]]; then
+  BOOTLOADER_SIZE-=512
 fi
-printf "%%define bootloader_size %s" $bootloader_size > build/include.asm
+INCLUDE_NUMBER_OF_LATE_SECTORS=$((BOOTLOADER_SIZE / 512))
+printf "%%define INCLUDE_NUMBER_OF_LATE_SECTORS %s" $INCLUDE_NUMBER_OF_LATE_SECTORS > build/i686/asm/include.asm
