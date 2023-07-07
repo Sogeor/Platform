@@ -2,17 +2,17 @@ bits 16
 
 section .text
 
-%include "build/include.asm"
+%include "include.asm"
 
 times 90 db 0
 
 jmp 0x0:entry
 
-%include "src/asm/early.asm"
+%include "early.asm"
 
-%include "src/asm/print.asm"
+%include "print.asm"
 
-%include "src/asm/dap.asm"
+%include "dap.asm"
 
 times 510 - ($ - $$) db 0
 
@@ -62,9 +62,9 @@ unreal:
     hlt
     jmp .loop
 
-%include "src/asm/a20_line.asm"
+%include "a20_line.asm"
 
-%include "src/asm/gdt.asm"
+%include "gdt.asm"
 
 global ask_drive_params
 ask_drive_params:
