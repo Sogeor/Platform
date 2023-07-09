@@ -8,11 +8,11 @@ times 90 db 0
 
 jmp 0x0:entry
 
-%include "early.asm"
+%include "bootloader/early.asm"
 
-%include "print.asm"
+%include "bootloader/print.asm"
 
-%include "dap.asm"
+%include "bootloader/dap.asm"
 
 times 510 - ($ - $$) db 0
 
@@ -62,9 +62,9 @@ unreal:
     hlt
     jmp .loop
 
-%include "a20_line.asm"
+%include "bootloader/a20_line.asm"
 
-%include "gdt.asm"
+%include "bootloader/gdt.asm"
 
 global ask_drive_params
 ask_drive_params:
