@@ -21,7 +21,7 @@ i686-bootloader:
 	make -C bootloader/bios i686
 
 i686-kernel:
-	make -C bootloader/bios i686
+	make -C kernel i686
 
 build/i686/i686.raw:
 	mkisofs -V "BOOTLOADER" -o build/i686/i686.raw -b bootloader.bin -no-emul-boot "bootloader/bios/build/i686/"
