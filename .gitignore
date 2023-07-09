@@ -1,6 +1,6 @@
-.idea
-bootloader/build
-bootloader/bios/build
-bootloader/uefi/build
-build
-kernel/build
+**/.idea
+**/bootloader/bios/build
+**/bootloader/build
+**/bootloader/uefi/build
+**/build
+**/kernel/build
