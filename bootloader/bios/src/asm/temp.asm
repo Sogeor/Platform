@@ -1,15 +1,10 @@
 bits 16
-
 section .text
 
 extern print
 extern println
 extern dap
 extern disk
-
-%include "bootloader/late.asm"
-
-%include "bootloader/a20_line.asm"
 
 %include "bootloader/gdt.asm"
 
@@ -188,6 +183,7 @@ vbe_info_fbaddr:
           dw 0
           times 206 db 0
 
+global vbe_cont_info
 vbe_cont_info:
           db "VBE2"
           dw 0x200
