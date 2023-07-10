@@ -1,3 +1,5 @@
+extern entrance
+
 entry:
     xor ax, ax
     mov ds, ax

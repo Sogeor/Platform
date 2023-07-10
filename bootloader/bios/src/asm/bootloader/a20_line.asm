@@ -1,3 +1,11 @@
+global prepare_a20_line
+global check_a20_line
+global enable_a20_line_using_bios
+global enable_a20_line_using_ps2_controller
+global enable_a20_line_using_fast_gate
+global enable_a20_line_using_io_port
+global disable_a20_line_using_io_port
+
 prepare_a20_line:
     push si
     mov si, PREPARING_A20_LINE

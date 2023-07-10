@@ -1,3 +1,7 @@
+global gdt
+global gdt_base
+global gdt_end
+
 align 8, db 0
 
 gdt:

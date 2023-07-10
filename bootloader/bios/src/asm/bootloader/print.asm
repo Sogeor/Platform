@@ -1,3 +1,6 @@
+global print
+global println
+
 print:
     push ax
     push si

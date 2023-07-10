@@ -6,6 +6,7 @@ global dap_buffer_offset
 global dap_buffer_segment
 global dap_lba_lower
 global dap_lba_upper
+global disk
 
 read_sectors:
 .loop:
