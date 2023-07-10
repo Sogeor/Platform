@@ -3,8 +3,8 @@
 extern entrance
 
 global entry
-global print
-global println
+global write
+global writeln
 global read_sectors
 global disk
 global dap
@@ -37,20 +37,20 @@ entry:
     xor cx, cx
     mov edx, 1
     mov si, LATE_SECTORS_READING
-    call println
+    call writeln
     call read_sectors
     jc .error
     mov si, JUMPING_TO_LATE_SECTORS
-    call println
+    call writeln
     jmp entrance
 .error:
     mov si, LATE_SECTORS_READING_ERROR
-    call println
+    call writeln
 .halt:
     hlt
     jmp .halt
 
-print:
+write:
     push ax
     push si
     mov ah, 0xE
@@ -65,11 +65,11 @@ print:
     pop ax
     ret
 
-println:
-    call print
+writeln:
+    call write
     push si
     mov si, LN_SEPARATOR
-    call print
+    call write
     pop si
     ret
 

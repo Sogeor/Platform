@@ -1,8 +1,8 @@
 bits 16
 section .text
 
-extern print
-extern println
+extern write
+extern writeln
 extern dap
 extern disk
 extern gdt

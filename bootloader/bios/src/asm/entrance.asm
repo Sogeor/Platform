@@ -1,4 +1,4 @@
-extern println
+extern writeln
 extern prepare_a20_line
 extern gdt
 extern ask_drive_params

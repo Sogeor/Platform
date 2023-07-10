@@ -1,4 +1,4 @@
-extern println
+extern writeln
 
 global prepare_a20_line
 global check_a20_line
@@ -14,34 +14,34 @@ prepare_a20_line:
     push ax
     push si
     mov si, PREPARING_A20_LINE
-    call println
+    call writeln
     mov si, CHECKING_A20_LINE
-    call println
+    call writeln
     call check_a20_line
     cmp ax, 0
     jz .free
     mov si, TRYING_TO_ENABLE_A20_LINE_USING_BIOS
-    call println
+    call writeln
     call enable_a20_line_using_bios
     mov si, CHECKING_A20_LINE
-    call println
+    call writeln
     call check_a20_line
     cmp ax, 0
     jz .free
     mov si, TRYING_TO_ENABLE_A20_LINE_USING_PS2_CONTROLLER
-    call println
+    call writeln
     call enable_a20_line_using_ps2_controller
     call check_a20_line
     cmp ax, 0
     jz .free
     mov si, TRYING_TO_ENABLE_A20_LINE_USING_FAST_GATE
-    call println
+    call writeln
     call enable_a20_line_using_fast_gate
     call check_a20_line
     cmp ax, 0
     jz .free
     mov si, TRYING_TO_ENABLE_A20_LINE_USING_IO_PORT
-    call println
+    call writeln
     call enable_a20_line_using_io_port
     call check_a20_line
     cmp ax, 0
