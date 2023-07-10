@@ -46,7 +46,7 @@ I686_REDEFINE_ASM_FILE_INCLUDE = ${I686_DEFINE_ASM_FILE_INCLUDE}
 i686-redefine-asm-include: i686-link
 	printf "%%define INCLUDE_NUMBER_OF_LATE_SECTORS %s" $(shell expr $(shell expr $(shell wc -c < ${I686_REDEFINE_ASM_FILE_INPUT}) + 511) / 512) > ${I686_REDEFINE_ASM_FILE_INCLUDE}
 
-I686_COMPILE_ASM_SOURCES_ASM = bootloader $(patsubst bootloader,, $(patsubst ${ANY_DIR_SOURCE_ASM}/%.asm, %, $(wildcard ${ANY_DIR_SOURCE_ASM}/*.asm)))
+I686_COMPILE_ASM_SOURCES_ASM = $(patsubst ${ANY_DIR_SOURCE_ASM}/%.asm, %, $(wildcard ${ANY_DIR_SOURCE_ASM}/*.asm))
 
 I686_COMPILE_ASM_FLAGS_COMMON = -f elf32
 I686_COMPILE_ASM_FLAGS_INCLUDE = $(addprefix -I , $(wordlist 1, $(words ${I686_DIRS_INCLUDE_ASM}), ${I686_DIRS_INCLUDE_ASM}))
@@ -86,7 +86,7 @@ I686_LINK_FILE_SCRIPT = i686.ld
 
 I686_LINK_FLAGS_COMMON = -nostdlib
 
-I686_LINK_FILES_BUILD_ASM = ${I686_DIR_BUILD_ASM}/bootloader.bin $(patsubst ${I686_DIR_BUILD_ASM}/bootloader.bin,, $(wildcard ${I686_DIR_BUILD_ASM}/*.bin))
+I686_LINK_FILES_BUILD_ASM = ${I686_DIR_BUILD_ASM}/bootloader.bin ${I686_DIR_BUILD_ASM}/entrance.bin $(patsubst ${I686_DIR_BUILD_ASM}/entrance.bin,, $(patsubst ${I686_DIR_BUILD_ASM}/bootloader.bin,, $(wildcard ${I686_DIR_BUILD_ASM}/*.bin)))
 I686_LINK_FILES_BUILD_C = $(wildcard ${I686_DIR_BUILD_C}/*.o)
 
 I686_LINK_FILE_OUTPUT = ${I686_DIR_BUILD}/bootloader.bin
