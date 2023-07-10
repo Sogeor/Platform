@@ -6,7 +6,6 @@ gdt:
 
 gdt_base:
     dq 0
-    dq 0
 
     dw 0xFFFF
     dw 0
