@@ -5,8 +5,7 @@ extern print
 extern println
 extern dap
 extern disk
-
-%include "bootloader/gdt.asm"
+extern gdt
 
 global ask_drive_params
 ask_drive_params:
