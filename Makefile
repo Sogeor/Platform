@@ -1,6 +1,6 @@
-.PHONY: all clean setup i686-clean i686-setup i686-bootloader i686-kernel i686-launch i686 x86_64-clean x86_64-setup x86_64-bootloader x86_64-kernel x86_64-launch x86_64
+.PHONY: all clean setup x86_64-clean x86_64-setup x86_64-bootloader x86_64-kernel x86_64-launch x86_64
 
-all: i686 x86_64
+all: x86_64
 
 clean:
 	rm -rf build
@@ -10,27 +10,6 @@ clean:
 setup:
 	set -e
 	mkdir -p build
-
-i686-clean:
-	rm -rf build/i686
-
-i686-setup: i686-clean setup
-	mkdir build/i686
-
-i686-bootloader:
-	make -C bootloader/bios i686
-
-i686-kernel:
-	make -C kernel i686
-
-build/i686/i686.raw:
-	mkisofs -V "BOOTLOADER" -o build/i686/i686.raw -b bootloader.bin -no-emul-boot "bootloader/bios/build/i686/"
-	dd if=bootloader/bios/build/i686/bootloader.bin of=build/i686/i686.raw conv=notrunc
-
-i686-launch: build/i686/i686.raw
-	qemu-system-i386 -drive format=raw,file=build/i686/i686.raw -net none
-
-i686: i686-setup i686-bootloader i686-kernel i686-launch
 
 x86_64-clean:
 	rm -rf build/x86_64
