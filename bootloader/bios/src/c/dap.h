@@ -2,10 +2,14 @@
 
 #include <stdint.h>
 
-extern volatile uint8_t dap_size;
-extern volatile uint8_t dap_reserved;
-extern volatile uint32_t dap_number_of_sectors;
-extern volatile uint32_t dap_buffer_offset;
-extern volatile uint32_t dap_buffer_segment;
-extern volatile uint16_t dap_lba_lower;
-extern volatile uint16_t dap_lba_upper;
+typedef struct dap_s {
+    uint8_t size;
+    uint8_t reserved;
+    uint16_t number_of_sectors;
+    uint16_t buffer_offset;
+    uint16_t buffer_segment;
+    uint32_t lba_lower;
+    uint32_t lba_upper;
+} __attribute__((__packed__)) dap_t;
+
+extern volatile dap_t dap;
