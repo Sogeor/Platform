@@ -15,20 +15,12 @@ entrance:
     push ds
     push es
     call prepare_a20_line
-    cmp ax, 0
-    jnz .a20_line_is_not_enabled
 .continue:
     lgdt [gdt]
     mov eax, cr0
     or al, 1
     mov cr0, eax
     jmp pmode
-.a20_line_is_not_enabled:
-    mov si, x16_real_msg_correct_behavior_with_the_disabled_a20_line_is_not_guaranteed
-    call println
-    jmp .continue
-
-x16_real_msg_correct_behavior_with_the_disabled_a20_line_is_not_guaranteed: db 'Correct behavior with the disabled A20 line is not guaranteed', 0
 
 pmode:
     mov bx, 0x10
