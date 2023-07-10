@@ -1,5 +1,7 @@
 bits 16
 
+section .text
+
 extern print
 extern println
 extern dap
