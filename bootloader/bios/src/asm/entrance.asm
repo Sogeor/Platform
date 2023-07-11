@@ -1,7 +1,7 @@
 extern writeln
 extern prepare_a20_line
 extern gdt
-extern ask_drive_params
+extern prepare_drive_parameters
 extern vbe_cont_info
 extern bootloader_main
 
@@ -33,7 +33,7 @@ pmode:
 unreal:
     pop es
     pop ds
-    call ask_drive_params
+    call prepare_drive_parameters
     mov ax, 0
     mov es, ax
     mov di, vbe_cont_info
