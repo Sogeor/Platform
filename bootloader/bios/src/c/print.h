@@ -1,7 +1,6 @@
 #pragma once
 
-#define X16_REAL_BIOS_LINE_SEPARATOR "\r\n"
-#define X16_REAL_MSG_PREFIX "[real_x16] "
+#define LN_SEPARATOR "\r\n"
 
 void print_c(const char c);
 

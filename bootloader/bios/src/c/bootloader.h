@@ -4,6 +4,8 @@
 
 #include "print.h"
 
+#define MSG "???"
+
 void bootloader_main();
 
 // deprecated
