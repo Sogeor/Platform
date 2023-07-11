@@ -7,14 +7,6 @@ extern dap
 extern disk
 extern gdt
 
-global ask_drive_params
-ask_drive_params:
-    mov ah, 0x48
-    mov dl, [disk]
-    mov si, drive_params
-    int 0x13
-    ret
-
 global enter_protected_mode
 enter_protected_mode:
     cli
@@ -127,17 +119,6 @@ bits 32
     pop eax
     pop ebp
     ret
-
-global drive_params
-drive_params: dw 0x1A
-              dw 0
-              dd 0
-              dd 0
-              dd 0
-              dd 0
-              dd 0
-global drive_params_bps
-drive_params_bps: dw 0
 
 align 4, db 0
 global vbe_info
