@@ -8,7 +8,7 @@ global enable_a20_line_using_fast_gate
 global enable_a20_line_using_io_port
 
 bits 16
-section .text
+section .a20_line
 
 prepare_a20_line:
     push ax

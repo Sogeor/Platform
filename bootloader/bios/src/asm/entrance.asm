@@ -8,7 +8,7 @@ extern bootloader_main
 global entrance
 
 bits 16
-section .text
+section .entrance
 
 entrance:
     cli

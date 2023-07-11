@@ -3,7 +3,7 @@ global gdt_base
 global gdt_end
 
 bits 16
-section .text
+section .gdt
 
 align 8, db 0
 

@@ -86,7 +86,7 @@ I686_LINK_FILE_SCRIPT = i686.ld
 
 I686_LINK_FLAGS_COMMON = -nostdlib
 
-I686_LINK_FILES_BUILD_ASM = ${I686_DIR_BUILD_ASM}/bootloader.bin ${I686_DIR_BUILD_ASM}/entrance.bin $(patsubst ${I686_DIR_BUILD_ASM}/entrance.bin,, $(patsubst ${I686_DIR_BUILD_ASM}/bootloader.bin,, $(wildcard ${I686_DIR_BUILD_ASM}/*.bin)))
+I686_LINK_FILES_BUILD_ASM = $(wildcard ${I686_DIR_BUILD_ASM}/*.bin)
 I686_LINK_FILES_BUILD_C = $(wildcard ${I686_DIR_BUILD_C}/*.o)
 
 I686_LINK_FILE_OUTPUT = ${I686_DIR_BUILD}/bootloader.bin

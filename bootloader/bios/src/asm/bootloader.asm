@@ -17,7 +17,7 @@ global dap_lba_lower
 global dap_lba_upper
 
 bits 16
-section .text
+section .bootloader
 
 times 90 db 0
 jmp 0x0:entry

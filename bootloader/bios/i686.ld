@@ -7,6 +7,11 @@ SECTIONS {
 
 	.text : {
 		code = .;
+		*(.bootloader)
+		*(.entrance)
+		*(.a20_line)
+		*(.gdt)
+		*(.drive)
 		*(.text)
 	}
 

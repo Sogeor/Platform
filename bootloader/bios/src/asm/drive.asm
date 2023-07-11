@@ -12,7 +12,7 @@ global drive_parameters_number_of_sectors
 global drive_parameters_number_of_bytes_per_sector
 
 bits 16
-section .text
+section .drive
 
 prepare_drive_parameters:
     push ax
