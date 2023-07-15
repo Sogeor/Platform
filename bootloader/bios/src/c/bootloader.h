@@ -2,15 +2,16 @@
 
 #include <stdint.h>
 
+#include <stddef.h>
+
 #include "print.h"
+#include "mode.h"
 
 #define MSG "???"
 
 void bootloader_main();
 
 // deprecated
-
-extern void enter_protected_mode();
 
 extern void do_bios_call(int func, int arg);
 
