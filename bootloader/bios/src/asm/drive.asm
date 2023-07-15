@@ -1,3 +1,4 @@
+extern halt
 extern writeln
 extern disk
 
@@ -26,9 +27,7 @@ prepare_drive_parameters:
     mov si, drive_parameters
     int 0x13
     jnc .free
-.halt:
-    hlt
-    jmp .halt
+    jmp halt
 .free:
     pop si
     pop ax
