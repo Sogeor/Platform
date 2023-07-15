@@ -1,29 +1,9 @@
 bits 16
 section .text
 
-extern write
-extern writeln
 extern dap
 extern disk
 extern gdt
-
-global enter_protected_mode
-enter_protected_mode:
-    cli
-    xor ax, ax
-    mov ds, ax
-    mov eax, cr0
-    or eax, 1
-    mov cr0, eax
-    mov ax, 0x10
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-    jmp 0x08:complete_flush
-complete_flush:
-    ret
 
 pm_stack: dd 0
           dd 0
