@@ -1,3 +1,4 @@
+extern halt
 extern writeln
 
 global prepare_a20_line
@@ -5,7 +6,6 @@ global check_a20_line
 global enable_a20_line_using_bios
 global enable_a20_line_using_ps2_controller
 global enable_a20_line_using_fast_gate
-global enable_a20_line_using_io_port
 
 bits 16
 section .a20_line
@@ -15,46 +15,32 @@ prepare_a20_line:
     push si
     mov si, PREPARING_A20_LINE
     call writeln
-    mov si, CHECKING_A20_LINE
-    call writeln
     call check_a20_line
     cmp ax, 0
     jz .free
-    mov si, TRYING_TO_ENABLE_A20_LINE_USING_BIOS
-    call writeln
     call enable_a20_line_using_bios
-    mov si, CHECKING_A20_LINE
-    call writeln
     call check_a20_line
     cmp ax, 0
     jz .free
-    mov si, TRYING_TO_ENABLE_A20_LINE_USING_PS2_CONTROLLER
-    call writeln
     call enable_a20_line_using_ps2_controller
     call check_a20_line
     cmp ax, 0
     jz .free
-    mov si, TRYING_TO_ENABLE_A20_LINE_USING_FAST_GATE
-    call writeln
     call enable_a20_line_using_fast_gate
     call check_a20_line
     cmp ax, 0
     jz .free
-    mov si, TRYING_TO_ENABLE_A20_LINE_USING_IO_PORT
-    call writeln
-    call enable_a20_line_using_io_port
-    call check_a20_line
-    cmp ax, 0
-    jz .free
-.halt:
-    hlt
-    jmp .halt
+    jmp halt
 .free:
     pop si
     pop ax
     ret
 
 check_a20_line:
+    push si
+    mov si, CHECKING_A20_LINE
+    call writeln
+    pop si
     cli
     push ds
     push es
@@ -92,6 +78,10 @@ check_a20_line:
     ret
 
 enable_a20_line_using_bios:
+    push si
+    mov si, TRYING_TO_ENABLE_A20_LINE_USING_BIOS
+    call writeln
+    pop si
     mov ax, 0x2403
     int 0x15
     jb .not_supported
@@ -126,6 +116,10 @@ enable_a20_line_using_bios:
     ret
 
 enable_a20_line_using_ps2_controller:
+    push si
+    mov si, TRYING_TO_ENABLE_A20_LINE_USING_PS2_CONTROLLER
+    call writeln
+    pop si
     cli
     call .wait_1
     mov al, 0xAD
@@ -161,6 +155,10 @@ enable_a20_line_using_ps2_controller:
     ret
 
 enable_a20_line_using_fast_gate:
+    push si
+    mov si, TRYING_TO_ENABLE_A20_LINE_USING_FAST_GATE
+    call writeln
+    pop si
     in al, 0x92
     test al, 2
     jnz .free
@@ -170,13 +168,8 @@ enable_a20_line_using_fast_gate:
 .free:
     ret
 
-enable_a20_line_using_io_port:
-    in al, 0xEE
-    ret
-
 PREPARING_A20_LINE: db 'Preparing the A20 line...', 0
 CHECKING_A20_LINE: db 'Checking the A20 line...', 0
 TRYING_TO_ENABLE_A20_LINE_USING_BIOS: db 'Trying to enable the A20 line using the BIOS...', 0
 TRYING_TO_ENABLE_A20_LINE_USING_PS2_CONTROLLER: db 'Trying to enable the A20 line using the PS/2 controller...', 0
 TRYING_TO_ENABLE_A20_LINE_USING_FAST_GATE: db 'Trying to enable the A20 line using the fast gate...', 0
-TRYING_TO_ENABLE_A20_LINE_USING_IO_PORT: db 'Trying to enable the A20 line using the IO port...', 0
