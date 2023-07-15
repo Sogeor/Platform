@@ -3,6 +3,7 @@
 extern entrance
 
 global entry
+global halt
 global write
 global writeln
 global read_sectors
@@ -49,15 +50,16 @@ entry:
     xor cx, cx
     mov edx, 1
     call read_sectors
-    jc .halt
+    jc halt
 
     mov si, TRANSFER_OF_CONTROL_TO_LATE_SECTORS ; Передача управления поздним секторам.
     call writeln
 
     jmp entrance
-.halt:
+
+halt:
     hlt
-    jmp .halt
+    jmp halt
 
 write:
     push ax
@@ -106,7 +108,7 @@ read_sectors:
 .free:
     ret
 
-disk: db 0x80
+disk: db 0
 
 dap:
 dap_size: db 16
