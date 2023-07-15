@@ -11,6 +11,7 @@ SECTIONS {
 		*(.entrance)
 		*(.a20_line)
 		*(.gdt)
+		*(.mode)
 		*(.drive)
 		*(.text)
 	}
