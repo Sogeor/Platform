@@ -38,13 +38,13 @@ i686-clean:
 I686_DEFINE_ASM_FILE_INCLUDE = ${I686_DIR_BUILD_ASM}/include.asm
 
 i686-define-asm-include:
-	printf "%%define INCLUDE_NUMBER_OF_LATE_SECTORS 0" > ${I686_DEFINE_ASM_FILE_INCLUDE}
+	printf "%%define NUMBER_OF_LATE_SECTORS 0" > ${I686_DEFINE_ASM_FILE_INCLUDE}
 
 I686_REDEFINE_ASM_FILE_INPUT = ${I686_LINK_FILE_OUTPUT}
 I686_REDEFINE_ASM_FILE_INCLUDE = ${I686_DEFINE_ASM_FILE_INCLUDE}
 
 i686-redefine-asm-include: i686-link
-	printf "%%define INCLUDE_NUMBER_OF_LATE_SECTORS %s" $(shell expr $(shell expr $(shell wc -c < ${I686_REDEFINE_ASM_FILE_INPUT}) + 511) / 512) > ${I686_REDEFINE_ASM_FILE_INCLUDE}
+	printf "%%define NUMBER_OF_LATE_SECTORS %s" $(shell expr $(shell expr $(shell wc -c < ${I686_REDEFINE_ASM_FILE_INPUT}) + 511) / 512) > ${I686_REDEFINE_ASM_FILE_INCLUDE}
 
 I686_COMPILE_ASM_SOURCES_ASM = $(patsubst ${ANY_DIR_SOURCE_ASM}/%.asm, %, $(wildcard ${ANY_DIR_SOURCE_ASM}/*.asm))
 
@@ -72,7 +72,7 @@ i686-recompile-asm: i686-redefine-asm-include
 
 I686_COMPILE_C_SOURCES_C = $(patsubst ${ANY_DIR_SOURCE_C}/%.c, %, $(wildcard ${ANY_DIR_SOURCE_C}/*.c))
 
-I686_COMPILE_C_FLAGS_COMMON = -O0 -std=gnu99 -ffreestanding -Wall
+I686_COMPILE_C_FLAGS_COMMON = -O0 -std=gnu17 -ffreestanding -Wall
 I686_COMPILE_C_FLAGS_INCLUDE = $(addprefix -I , $(wordlist 1, $(words ${I686_DIRS_INCLUDE_C}), ${I686_DIRS_INCLUDE_C}))
 
 I686_COMPILE_C_PATTERN_SOURCE_C = ${ANY_DIR_SOURCE_C}/${name}.c
