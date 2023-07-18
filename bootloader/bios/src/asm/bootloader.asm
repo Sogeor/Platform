@@ -42,7 +42,7 @@ entry:
     mov gs, ax
     mov ss, ax
 
-    mov si, READING_LATE_SECTORS ; Чтение поздних секторов с диска в память.
+    mov si, READING_LATE_SECTORS_FROM_DISK_TO_MEMORY ; Чтение поздних секторов с диска в память.
     call writeln
 
     mov ax, NUMBER_OF_LATE_SECTORS
@@ -120,8 +120,8 @@ dap_lba_lower: dd 0
 dap_lba_upper: dd 0
 
 LINE_SEPARATOR: db 13, 10, 0
-READING_LATE_SECTORS: db 'Reading the late sectors from disk to memory...', 0
-TRANSFER_OF_CONTROL_TO_LATE_SECTORS: db 'Transfer of control to the late sectors...', 0
+READING_LATE_SECTORS_FROM_DISK_TO_MEMORY: db 'Reading late sectors from disk to memory...', 0
+TRANSFER_OF_CONTROL_TO_LATE_SECTORS: db 'Transfer of control to late sectors...', 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55
