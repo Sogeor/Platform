@@ -4,6 +4,7 @@ section .text
 extern dap
 extern disk
 extern gdt
+extern vbe_info
 
 pm_stack: dd 0
           dd 0
@@ -101,60 +102,60 @@ bits 32
     ret
 
 align 4, db 0
-global vbe_info
-vbe_info: dw 0
-          dw 0
-          dw 0
-          dw 0
-          dd 0
-          dd 0
-global vbe_info_pitch
-vbe_info_pitch:
-          dw 0
-global vbe_info_width
-vbe_info_width:
-          dw 0
-global vbe_info_height
-vbe_info_height:
-          dw 0
-          dw 0
-          db 0
-global vbe_info_bpp
-vbe_info_bpp:
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-          db 0
-global vbe_info_fbaddr
-vbe_info_fbaddr:
-          dd 0
-          dd 0
-          dw 0
-          times 206 db 0
-
-global vbe_cont_info
-vbe_cont_info:
-          db "VBE2"
-          dw 0x200
-          dd 0
-          dd 0
-global vbe_cont_info_mode_off
-vbe_cont_info_mode_off:
-          dw 0
-vbe_cont_info_mode_seg:
-          dw 0
-          times 494 db 0
+;global vbe_info
+;vbe_info: dw 0
+;          dw 0
+;          dw 0
+;          dw 0
+;          dd 0
+;          dd 0
+;global vbe_info_pitch
+;vbe_info_pitch:
+;          dw 0
+;global vbe_info_width
+;vbe_info_width:
+;          dw 0
+;global vbe_info_height
+;vbe_info_height:
+;          dw 0
+;          dw 0
+;          db 0
+;global vbe_info_bpp
+;vbe_info_bpp:
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;          db 0
+;global vbe_info_fbaddr
+;vbe_info_fbaddr:
+;          dd 0
+;          dd 0
+;          dw 0
+;          times 206 db 0
+;
+;global vbe_cont_info
+;vbe_cont_info:
+;          db "VBE2"
+;          dw 0x200
+;          dd 0
+;          dd 0
+;global vbe_cont_info_mode_off
+;vbe_cont_info_mode_off:
+;          dw 0
+;vbe_cont_info_mode_seg:
+;          dw 0
+;          times 494 db 0
 
 global disk_space
 disk_space: times 2048 db 0

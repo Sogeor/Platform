@@ -3,7 +3,7 @@ extern prepare_a20_line
 extern prepare_gdt
 extern prepare_unreal_mode
 extern prepare_drive_parameters
-extern vbe_cont_info
+extern vbe_info
 extern bootloader_main
 
 global entrance
@@ -16,10 +16,10 @@ entrance:
     call prepare_gdt ; Подготовка таблицы глобальных дескрипторов.
     call prepare_unreal_mode ; Переход в нереальный режим.
     call prepare_drive_parameters
-    mov ax, 0
+    mov ax, 0 ; TODO: refactor
     mov es, ax
-    mov di, vbe_cont_info
+    mov di, vbe_info
     mov ax, 0x4F00
-    int 0x10
+    int 0x10 ; TODO: refactor
     call bootloader_main
     jmp halt
