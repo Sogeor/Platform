@@ -1,6 +1,6 @@
 .PHONY: all clean setup build define-asm-include compile-asm compile-c link redefine-asm-include recompile-asm relink
 
-PATH_SOURCE = ../intel64
+PATH_SOURCE = $(CURDIR)
 PATH_SOURCE_ASM = ${PATH_SOURCE}/asm
 PATH_SOURCE_C = ${PATH_SOURCE}/c
 
