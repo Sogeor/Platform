@@ -108,16 +108,16 @@ read_sectors:
 .free:
     ret
 
-disk: db 0
+disk db 0
 
 dap:
-dap_size: db 16
-dap_reserved: db 0
-dap_number_of_sectors: dw 0
-dap_buffer_offset: dw 0
-dap_buffer_segment: dw 0
-dap_lba_lower: dd 0
-dap_lba_upper: dd 0
+dap_size db 16
+dap_reserved db 0
+dap_number_of_sectors dw 0
+dap_buffer_offset dw 0
+dap_buffer_segment dw 0
+dap_lba_lower dd 0
+dap_lba_upper dd 0
 
 LINE_SEPARATOR: db 13, 10, 0
 READING_LATE_SECTORS_FROM_DISK_TO_MEMORY: db 'Reading late sectors from disk to memory...', 0
