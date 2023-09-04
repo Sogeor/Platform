@@ -1,5 +1,6 @@
 extern halt
 extern println
+extern lifecycle
 
 global launch
 
@@ -9,6 +10,6 @@ bits 16 ; Определение разрядности для компилят�
 launch:
     mov si, WELCOME_BRO
     call println
-    jmp halt
+    jmp lifecycle
 
 WELCOME_BRO: db 'Welcome, Bro!', 0

@@ -1,6 +1,6 @@
-.PHONY: all clean setup x86_64-clean x86_64-setup x86_64-bootloader x86_64-kernel x86_64-launch x86_64
+.PHONY: all clean setup intel64-clean intel64-setup intel64-bootloader intel64-kernel intel64-launch intel64
 
-all: x86_64
+all: intel64
 
 clean:
 	rm -rf build
@@ -11,23 +11,23 @@ setup:
 	set -e
 	mkdir -p build
 
-x86_64-clean:
-	rm -rf build/x86_64
+intel64-clean:
+	rm -rf build/intel64
 
-x86_64-setup: x86_64-clean setup
-	mkdir build/x86_64
+intel64-setup: intel64-clean setup
+	mkdir build/intel64
 
-x86_64-bootloader:
-	make -C bootloader/bios i686
+intel64-bootloader:
+	make -C bootloader/bios intel64
 
-x86_64-kernel:
+intel64-kernel:
 	make -C kernel x86_64
 
-build/x86_64/x86_64.raw:
-	mkisofs -V "BOOTLOADER" -o build/x86_64/x86_64.raw -b bootloader.bin -no-emul-boot "bootloader/bios/build/i686/"
-	dd if=bootloader/bios/build/i686/bootloader.bin of=build/x86_64/x86_64.raw conv=notrunc
+build/intel64/intel64.raw:
+	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b bootloader.bin -no-emul-boot "bootloader/bios/build/intel64/bin/"
+	dd if=bootloader/bios/build/intel64/bin/bootloader.bin of=build/intel64/intel64.raw conv=notrunc
 
-x86_64-launch: build/x86_64/x86_64.raw
-	qemu-system-x86_64 -drive format=raw,file=build/x86_64/x86_64.raw -net none
+intel64-launch: build/intel64/intel64.raw
+	qemu-system-x86_64 -drive format=raw,file=build/intel64/intel64.raw -net none
 
-x86_64: x86_64-clean x86_64-setup x86_64-bootloader x86_64-kernel x86_64-launch
+intel64: intel64-clean intel64-setup intel64-bootloader intel64-kernel intel64-launch
