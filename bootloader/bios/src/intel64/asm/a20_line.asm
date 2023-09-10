@@ -11,8 +11,6 @@ section .a20_line ; Определение секции для линковщи�
 bits 16 ; Определение разрядности для компилятора и линковщика.
 
 prepare_a20_line:
-    push ax
-    push si
     mov si, PREPARING_A20_LINE
     call println
     call check_a20_line
@@ -32,15 +30,11 @@ prepare_a20_line:
     jz .free
     jmp halt
 .free:
-    pop si
-    pop ax
     ret
 
 check_a20_line:
-    push si
     mov si, CHECKING_A20_LINE
     call println
-    pop si
     cli
     push ds
     push es
@@ -78,10 +72,8 @@ check_a20_line:
     ret
 
 enable_a20_line_using_bios:
-    push si
     mov si, TRYING_TO_ENABLE_A20_LINE_USING_BIOS
     call println
-    pop si
     mov ax, 0x2403
     int 0x15
     jb .not_supported
@@ -116,10 +108,8 @@ enable_a20_line_using_bios:
     ret
 
 enable_a20_line_using_ps2_controller:
-    push si
     mov si, TRYING_TO_ENABLE_A20_LINE_USING_PS2_CONTROLLER
     call println
-    pop si
     cli
     call .wait_1
     mov al, 0xAD
@@ -155,10 +145,8 @@ enable_a20_line_using_ps2_controller:
     ret
 
 enable_a20_line_using_fast_gate:
-    push si
     mov si, TRYING_TO_ENABLE_A20_LINE_USING_FAST_GATE
     call println
-    pop si
     in al, 0x92
     test al, 2
     jnz .free
