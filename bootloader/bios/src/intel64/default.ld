@@ -11,6 +11,7 @@ SECTIONS {
 		*(.launcher)
 		*(.a20_line)
 		*(.gdt)
+		*(.pmode)
 		*(.text)
 	}
 

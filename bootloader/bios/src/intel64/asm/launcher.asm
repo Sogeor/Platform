@@ -10,10 +10,10 @@ section .launcher ; Определение секции для линковщи�
 bits 16 ; Определение разрядности для компилятора и линковщика.
 
 launch:
-    mov si, WELCOME_BRO
-    call println
     call prepare_a20_line ; Подготовка линии A20.
     call prepare_gdt ; Подготовка таблицы глобальных дескрипторов.
-    jmp lifecycle
+    mov si, TRANSFER_OF_CONTROL_TO_LIFECYCLE
+    call println
+    jmp lifecycle ; Передача управления основному жизненному циклу загрузчика.
 
-WELCOME_BRO: db 'Welcome, Bro!', 0
+TRANSFER_OF_CONTROL_TO_LIFECYCLE: db 'Transfer of control to the lifecycle...', 0

@@ -4,7 +4,7 @@ __asm__(".code16gcc");
 
 size_t util_get_string_length(const char *string) {
     size_t length = 0;
-    while (string[length]) length++;
+    while (*string++) length++;
     return length;
 }
 
