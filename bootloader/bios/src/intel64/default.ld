@@ -9,6 +9,7 @@ SECTIONS {
 		code = .;
 		*(.injector)
 		*(.launcher)
+		*(.a20_line)
 		*(.text)
 	}
 
