@@ -1,10 +1,10 @@
 #include "lifecycle.h"
-#include "injector.h"
 
 __asm__(".code16gcc");
 
 void lifecycle() {
-    for (int i = 0; i < 10; ++i) {
-        println_adapter("hello world");
-    }
+    println_adapter("hello world");
+    println_adapter(util_int32_to_str(-147, 10));
+    print_adapter("number_of_sectors: ");
+    println_adapter(util_uint32_to_str(dap.number_of_sectors, 10));
 }
