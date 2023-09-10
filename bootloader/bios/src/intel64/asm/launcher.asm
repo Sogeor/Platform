@@ -1,6 +1,7 @@
 extern halt
 extern println
 extern prepare_a20_line
+extern prepare_gdt
 extern lifecycle
 
 global launch
@@ -12,6 +13,7 @@ launch:
     mov si, WELCOME_BRO
     call println
     call prepare_a20_line ; Подготовка линии A20.
+    call prepare_gdt ; Подготовка таблицы глобальных дескрипторов.
     jmp lifecycle
 
 WELCOME_BRO: db 'Welcome, Bro!', 0

@@ -10,6 +10,7 @@ SECTIONS {
 		*(.injector)
 		*(.launcher)
 		*(.a20_line)
+		*(.gdt)
 		*(.text)
 	}
 
