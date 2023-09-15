@@ -62,6 +62,7 @@ LINK_FLAG_LIST_COMMON = -nostdlib
 
 LINK_BUILD_LIST_ASM = $(wildcard ${PATH_BUILD_ASM}/*.bin)
 LINK_BUILD_LIST_C = $(wildcard ${PATH_BUILD_C}/*.o)
+LINK_BUILD_LIST_C2 = $(patsubst ${PATH_BUILD_C}/lifecycle.o, , $(wildcard ${PATH_BUILD_C}/*.o)) ${PATH_BUILD_C}/lifecycle.o
 
 LINK_BIN_BOOTLOADER_FILE = ${PATH_BUILD_BIN}/bootloader.bin
 
