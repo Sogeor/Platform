@@ -12,6 +12,7 @@ SECTIONS {
 		*(.a20_line)
 		*(.gdt)
 		*(.pmode)
+		*(.vbe)
 		*(.text)
 	}
 

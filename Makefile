@@ -28,6 +28,6 @@ build/intel64/intel64.raw:
 	dd if=bootloader/bios/build/intel64/bin/bootloader.bin of=build/intel64/intel64.raw conv=notrunc
 
 intel64-launch: build/intel64/intel64.raw
-	qemu-system-x86_64 -drive format=raw,file=build/intel64/intel64.raw -net none
+	qemu-system-x86_64 -no-reboot -no-shutdown -drive format=raw,file=build/intel64/intel64.raw -net none
 
 intel64: intel64-clean intel64-setup intel64-bootloader intel64-kernel intel64-launch

@@ -2,6 +2,16 @@
 
 __asm__(".code16gcc");
 
+uint32_t util_parse_r_ptr(r_ptr_t *r_ptr) {
+    return r_ptr->segment * 16 + r_ptr->offset;
+}
+
+uint32_t util_parse_p_ptr(p_ptr_t *p_ptr) {
+    // todo
+    halt();
+    return 0;
+}
+
 size_t util_get_string_length(const char *string) {
     size_t length = 0;
     while (*string++) length++;
