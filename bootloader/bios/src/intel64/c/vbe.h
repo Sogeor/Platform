@@ -22,6 +22,7 @@ typedef struct vbe_mode_summary_s {
     uint16_t number;
     uint16_t width;
     uint16_t height;
+    uint16_t buffer_size;
 } __attribute__((packed)) vbe_mode_summary_t;
 
 typedef struct vbe_mode_info_s {

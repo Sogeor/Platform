@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "injector.h"
-#include "x.h"
 
 typedef struct r_ptr_s {
     uint16_t offset;

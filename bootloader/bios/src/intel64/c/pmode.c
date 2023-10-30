@@ -2,13 +2,6 @@
 
 __asm__(".code32");
 
-void pmode_clear_screen() {
-    __asm__("mov $0, %al\n"
-            "movl $3840, %ecx\n"
-            "movl $0xB8000, %edi\n"
-            "rep stosb");
-}
-
 void pmode_print_symbol(char symbol) {
     static int x = 0;
     static int y = 0;

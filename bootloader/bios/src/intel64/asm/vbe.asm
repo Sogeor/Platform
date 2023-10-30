@@ -48,4 +48,4 @@ vbe_controller_info: times 512 db 0
 
 vbe_mode_info: times 256 db 0
 
-vbe_mode_summary: times 6 db 0
+vbe_mode_summary: times 8 db 0

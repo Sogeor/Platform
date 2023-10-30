@@ -37,6 +37,9 @@ vbe_func_result_t vbe_select_mode_info() {
         result.ah = VBE_FUNC_RESULT_AH_FAILED;
         return result;
     }
+    if (*list_of_mode_numbers_ptr != vbe_mode_summary.number) result = vbe_get_mode_info(vbe_mode_summary.number);
+    if (result.al != VBE_FUNC_RESULT_AL_SUPPORTED && result.ah != VBE_FUNC_RESULT_AH_SUCCESSFUL) return result;
+    vbe_mode_summary.buffer_size = vbe_mode_info.height * vbe_mode_info.number_of_bytes_in_line / 4096;
     return *list_of_mode_numbers_ptr != vbe_mode_summary.number ? vbe_get_mode_info(vbe_mode_summary.number) : result;
 }
 

@@ -2,9 +2,9 @@
 
 #include <stdint.h>
 
-extern void enter_pmode();
+extern void pmode_enter();
 
-void pmode_clear_screen();
+extern void pmode_clear();
 
 void pmode_print_symbol(char symbol);
 

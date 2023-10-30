@@ -7,15 +7,10 @@
 #include "pmode.h"
 #include "utils.h"
 #include "vbe.h"
-#include "x.h"
 
 void lifecycle();
 
 void lc_vbe_load();
-
-void lc_pmode_load();
-
-void lc_pmode_init();
 
 void lc_pmode();
 
