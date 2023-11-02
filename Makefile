@@ -18,14 +18,14 @@ intel64-setup: intel64-clean setup
 	mkdir build/intel64
 
 intel64-bootloader:
-	make -C bootloader/bios intel64
+	make -C bootloader/bios build-intel64
 
 intel64-kernel:
 	make -C kernel x86_64
 
 build/intel64/intel64.raw:
-	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b bootloader.bin -no-emul-boot "bootloader/bios/build/intel64/bin/"
-	dd if=bootloader/bios/build/intel64/bin/bootloader.bin of=build/intel64/intel64.raw conv=notrunc
+	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b intel64.bin -no-emul-boot "bootloader/bios/build/"
+	dd if=bootloader/bios/build/intel64.bin of=build/intel64/intel64.raw conv=notrunc
 
 intel64-launch: build/intel64/intel64.raw
 	qemu-system-x86_64 -no-reboot -no-shutdown -drive format=raw,file=build/intel64/intel64.raw -net none

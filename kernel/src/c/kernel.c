@@ -2,3 +2,7 @@
 
 void kernel_main() {
 }
+
+void _start() {
+
+}
