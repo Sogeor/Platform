@@ -6,8 +6,8 @@ global gdt
 global gdt_base
 global gdt_end
 
-section .gdt ; Определение секции для линковщика.
-bits 16 ; Определение разрядности для компилятора и линковщика.
+section .gdt
+bits 16
 
 prepare_gdt:
     mov si, PREPARING_GDT

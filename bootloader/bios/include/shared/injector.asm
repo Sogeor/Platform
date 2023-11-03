@@ -17,8 +17,8 @@ global dap_buffer_segment
 global dap_lba_lower
 global dap_lba_upper
 
-section .injector ; Определение секции для линковщика.
-bits 16 ; Определение разрядности для компилятора и линковщика.
+section .injector
+bits 16
 
 times 90 db 0 ; Резервирование данных для BIOS.
 jmp 0x0:inject ; Сброс предустановленного сегмента на начальный.

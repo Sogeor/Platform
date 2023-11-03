@@ -3,8 +3,8 @@ extern vbe_mode_summary
 global pmode_enter
 global pmode_clear
 
-section .pmode ; Определение секции для линковщика.
-bits 16 ; Определение разрядности для компилятора и линковщика.
+section .pmode
+bits 16
 
 pmode_enter:
     cli
@@ -24,7 +24,7 @@ pmode_enter:
 .flush:
     ret
 
-bits 32 ; Определение разрядности для компилятора и линковщика.
+bits 32
 
 pmode_clear:
     push eax

@@ -7,8 +7,8 @@ global enable_a20_line_using_bios
 global enable_a20_line_using_ps2_controller
 global enable_a20_line_using_fast_gate
 
-section .a20_line ; Определение секции для линковщика.
-bits 16 ; Определение разрядности для компилятора и линковщика.
+section .a20_line
+bits 16
 
 prepare_a20_line:
     mov si, PREPARING_A20_LINE
