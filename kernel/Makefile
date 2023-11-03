@@ -1,90 +1,248 @@
-.PHONY: all setup clean x86_64 x86_64-setup x86_64-clean x86_64-compile-asm x86_64-compile-c x86_64-compile-cpp x86_64-link
+# constants
 
-ANY_DIR_BUILD = build
+P_ROOT = $(CURDIR)
 
-ANY_DIR_SOURCE = src
-ANY_DIR_SOURCE_ASM = ${ANY_DIR_SOURCE}/asm
-ANY_DIR_SOURCE_C = ${ANY_DIR_SOURCE}/c
-ANY_DIR_SOURCE_CPP = ${ANY_DIR_SOURCE}/cpp
+P_BUILD = ${P_ROOT}/build
 
-ANY_DIRS_INCLUDE_ASM = ${ANY_DIR_SOURCE_ASM}
-ANY_DIRS_INCLUDE_C = ${ANY_DIR_SOURCE_C} ${ANY_DIR_SOURCE_CPP}
-ANY_DIRS_INCLUDE_CPP = ${ANY_DIR_SOURCE_CPP} ${ANY_DIR_SOURCE_C}
+P_BUILD_SHARED = ${P_BUILD}/shared
 
-all: x86_64
+P_BUILD_AMD64 = ${P_BUILD}/amd64
 
-setup:
-	set -e
-	mkdir -p ${ANY_DIR_BUILD}
+P_BUILD_INTEL64 = ${P_BUILD}/intel64
+
+F_BUILD_AMD64 = ${P_BUILD}/amd64.bin
+
+F_BUILD_INTEL64 = ${P_BUILD}/intel64.bin
+
+P_INCLUDE = ${P_ROOT}/include
+
+P_INCLUDE_SHARED = ${P_INCLUDE}/shared
+
+P_INCLUDE_AMD64 = ${P_INCLUDE}/amd64
+
+P_INCLUDE_INTEL64 = ${P_INCLUDE}/intel64
+
+F_INCLUDE_ASM = ${P_BUILD_SHARED}/include.asm
+
+F_LINK_SCRIPT_AMD64 = ${P_INCLUDE_AMD64}/amd64.ld
+
+F_LINK_SCRIPT_INTEL64 = ${P_INCLUDE_INTEL64}/intel64.ld
+
+# targets
+
+.PHONY: all
+
+all: build-amd64 build-intel64
+
+.PHONY: clean
 
 clean:
-	rm -rf ${ANY_DIR_BUILD}
+	@echo "[clean] Removing a build directory... (${P_BUILD})"
+	@rm -rf ${P_BUILD}
 
-X86_64_DIR_BUILD = ${ANY_DIR_BUILD}/x86_64
-X86_64_DIR_BUILD_ASM = ${X86_64_DIR_BUILD}/asm
-X86_64_DIR_BUILD_C = ${X86_64_DIR_BUILD}/c
-X86_64_DIR_BUILD_CPP = ${X86_64_DIR_BUILD}/cpp
+.PHONY: clean-shared
 
-X86_64_DIRS_INCLUDE_ASM = ${ANY_DIRS_INCLUDE_ASM} ${X86_64_DIR_BUILD_ASM}
-X86_64_DIRS_INCLUDE_C = ${ANY_DIRS_INCLUDE_C}
-X86_64_DIRS_INCLUDE_CPP = ${ANY_DIRS_INCLUDE_CPP}
+clean-shared:
+	@echo "[clean] [shared] Removing a shared build directory... (${P_BUILD_SHARED})"
+	@rm -rf ${P_BUILD_SHARED}
 
-x86_64: x86_64-setup x86_64-link
+.PHONY: clean-amd64
 
-x86_64-setup: setup x86_64-clean
-	mkdir ${X86_64_DIR_BUILD}
-	mkdir ${X86_64_DIR_BUILD_ASM}
-	mkdir ${X86_64_DIR_BUILD_C}
-	mkdir ${X86_64_DIR_BUILD_CPP}
+clean-amd64:
+	@echo "[clean] [amd64] Removing an amd64 build directory... (${P_BUILD_AMD64})"
+	@rm -rf ${P_BUILD_AMD64}
 
-x86_64-clean:
-	rm -rf ${X86_64_DIR_BUILD}
+.PHONY: clean-intel64
 
-X86_64_COMPILE_ASM_SOURCES_ASM = $(patsubst ${ANY_DIR_SOURCE_ASM}/%.asm, %, $(wildcard ${ANY_DIR_SOURCE_ASM}/*.asm))
+clean-intel64:
+	@echo "[clean] [intel64] Removing an intel64 build directory... (${P_BUILD_INTEL64})"
+	@rm -rf ${P_BUILD_INTEL64}
 
-X86_64_COMPILE_ASM_FLAGS_COMMON = -f elf64
-X86_64_COMPILE_ASM_FLAGS_INCLUDE = $(addprefix -I , $(wordlist 1, $(words ${X86_64_DIRS_INCLUDE_ASM}), ${X86_64_DIRS_INCLUDE_ASM}))
+.PHONY: build-shared
 
-X86_64_COMPILE_ASM_PATTERN_SOURCE_ASM = ${ANY_DIR_SOURCE_ASM}/${name}.asm
-X86_64_COMPILE_ASM_PATTERN_BUILD_ASM = ${X86_64_DIR_BUILD_ASM}/${name}.bin
+build-shared: build-shared-prepare build-shared-compile-asm build-shared-compile-c build-shared-compile-cpp
 
-x86_64-compile-asm:
-	$(foreach name, ${X86_64_COMPILE_ASM_SOURCES_ASM}, \
-	nasm ${X86_64_COMPILE_ASM_FLAGS_COMMON} ${X86_64_COMPILE_ASM_FLAGS_INCLUDE} ${X86_64_COMPILE_ASM_PATTERN_SOURCE_ASM} -o ${X86_64_COMPILE_ASM_PATTERN_BUILD_ASM};)
+.PHONY: build-amd64
 
-X86_64_COMPILE_C_SOURCES_C = $(patsubst ${ANY_DIR_SOURCE_C}/%.c, %, $(wildcard ${ANY_DIR_SOURCE_C}/*.c))
+build-amd64: build-shared build-amd64-prepare
 
-X86_64_COMPILE_C_FLAGS_COMMON = -O0 -std=gnu17 -ffreestanding -Wall
-X86_64_COMPILE_C_FLAGS_INCLUDE = $(addprefix -I , $(wordlist 1, $(words ${X86_64_DIRS_INCLUDE_C}), ${X86_64_DIRS_INCLUDE_C}))
+.PHONY: build-intel64
 
-X86_64_COMPILE_C_PATTERN_SOURCE_C = ${ANY_DIR_SOURCE_C}/${name}.c
-X86_64_COMPILE_C_PATTERN_BUILD_C = ${X86_64_DIR_BUILD_C}/${name}.o
+build-intel64: build-shared build-intel64-prepare build-intel64-link
 
-x86_64-compile-c:
-	$(foreach name, ${X86_64_COMPILE_C_SOURCES_C}, \
-	x86_64-elf-gcc ${X86_64_COMPILE_C_FLAGS_COMMON} ${X86_64_COMPILE_C_FLAGS_INCLUDE} -c ${X86_64_COMPILE_C_PATTERN_SOURCE_C} -o ${X86_64_COMPILE_C_PATTERN_BUILD_C};)
+.PHONY: build-shared-prepare
 
-X86_64_COMPILE_CPP_SOURCES_CPP = $(patsubst ${ANY_DIR_SOURCE_CPP}/%.cpp, %, $(wildcard ${ANY_DIR_SOURCE_CPP}/*.cpp))
+build-shared-prepare: clean-shared
+	@echo "[build] [shared] [prepare] Creating a shared build directory... (${P_BUILD_SHARED})"
+	@mkdir -p ${P_BUILD_SHARED}
 
-X86_64_COMPILE_CPP_FLAGS_COMMON = -O0 -std=gnu++17 -ffreestanding -Wall
-X86_64_COMPILE_CPP_FLAGS_INCLUDE = $(addprefix -I , $(wordlist 1, $(words ${X86_64_DIRS_INCLUDE_CPP}), ${X86_64_DIRS_INCLUDE_CPP}))
+.PHONY: build-amd64-prepare
 
-X86_64_COMPILE_CPP_PATTERN_SOURCE_CPP = ${ANY_DIR_SOURCE_CPP}/${name}.cpp
-X86_64_COMPILE_CPP_PATTERN_BUILD_CPP = ${X86_64_DIR_BUILD_CPP}/${name}.o
+build-amd64-prepare: clean-amd64
+	@echo "[build] [amd64] [prepare] Creating an amd64 build directory... (${P_BUILD_AMD64})"
+	@mkdir -p ${P_BUILD_AMD64}
 
-x86_64-compile-cpp:
-	$(foreach name, ${X86_64_COMPILE_CPP_SOURCES_CPP}, \
-	x86_64-elf-g++ ${X86_64_COMPILE_CPP_FLAGS_COMMON} ${X86_64_COMPILE_CPP_FLAGS_INCLUDE} -c ${X86_64_COMPILE_CPP_PATTERN_SOURCE_CPP} -o ${X86_64_COMPILE_CPP_PATTERN_BUILD_CPP};)
+.PHONY: build-intel64-prepare
 
-X86_64_LINK_FILE_SCRIPT = x86_64.ld
+build-intel64-prepare: clean-intel64
+	@echo "[build] [intel64] [prepare] Creating an intel64 build directory... (${P_BUILD_INTEL64})"
+	@mkdir -p ${P_BUILD_INTEL64}
 
-X86_64_LINK_FLAGS_COMMON = -nostdlib
+.PHONY: build-shared-compile-asm
 
-X86_64_LINK_FILES_BUILD_ASM = $(wildcard ${X86_64_DIR_BUILD_ASM}/*.bin)
-X86_64_LINK_FILES_BUILD_C = $(wildcard ${X86_64_DIR_BUILD_C}/*.o)
-X86_64_LINK_FILES_BUILD_CPP = $(wildcard ${X86_64_DIR_BUILD_CPP}/*.o)
+BUILD_SHARED_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.asm, %, $(wildcard ${P_INCLUDE_SHARED}/*.asm))
 
-X86_64_LINK_FILE_OUTPUT = ${X86_64_DIR_BUILD}/bootloader.bin
+BUILD_SHARED_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
 
-x86_64-link: x86_64-compile-asm x86_64-compile-c x86_64-compile-cpp
-	x86_64-elf-gcc -T ${X86_64_LINK_FILE_SCRIPT} ${X86_64_LINK_FLAGS_COMMON} ${X86_64_LINK_FILES_BUILD_ASM} ${X86_64_LINK_FILES_BUILD_C} ${X86_64_LINK_FILES_BUILD_CPP} -o ${X86_64_LINK_FILE_OUTPUT}
+BUILD_SHARED_COMPILE_ASM_PATTERN_SOURCE = ${P_INCLUDE_SHARED}/$${filename}.asm
+BUILD_SHARED_COMPILE_ASM_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.bin
+
+build-shared-compile-asm:
+	@for filename in ${BUILD_SHARED_COMPILE_ASM_LIST_F} ; do \
+		echo "[build] [shared] [compile-asm] Compiling $${filename}.asm into $${filename}.bin..." ; \
+		nasm ${BUILD_SHARED_COMPILE_ASM_LIST_FLAG} ${BUILD_SHARED_COMPILE_ASM_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_ASM_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-shared-compile-c
+
+BUILD_SHARED_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.c, %, $(wildcard ${P_INCLUDE_SHARED}/*.c))
+
+BUILD_SHARED_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
+
+BUILD_SHARED_COMPILE_C_PATTERN_SOURCE = ${P_INCLUDE_SHARED}/$${filename}.c
+BUILD_SHARED_COMPILE_C_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.o
+
+build-shared-compile-c:
+	@for filename in ${BUILD_SHARED_COMPILE_C_LIST_F} ; do \
+		echo "[build] [shared] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
+		i686-elf-gcc ${BUILD_SHARED_COMPILE_C_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_C_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-shared-compile-cpp
+
+BUILD_SHARED_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.cpp, %, $(wildcard ${P_INCLUDE_SHARED}/*.cpp))
+
+BUILD_SHARED_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
+
+BUILD_SHARED_COMPILE_CPP_PATTERN_SOURCE = ${P_INCLUDE_SHARED}/$${filename}.cpp
+BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.o
+
+build-shared-compile-cpp:
+	@for filename in ${BUILD_SHARED_COMPILE_CPP_LIST_F} ; do \
+		echo "[build] [shared] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
+		i686-elf-g++ ${BUILD_SHARED_COMPILE_CPP_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-amd64-compile-asm
+
+BUILD_AMD64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.asm, %, $(wildcard ${P_INCLUDE_AMD64}/*.asm))
+
+BUILD_AMD64_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_AMD64} -I ${P_BUILD_AMD64}
+
+BUILD_AMD64_COMPILE_ASM_PATTERN_SOURCE = ${P_INCLUDE_AMD64}/$${filename}.asm
+BUILD_AMD64_COMPILE_ASM_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.bin
+
+build-amd64-compile-asm: build-shared-compile-asm
+	@for filename in ${BUILD_AMD64_COMPILE_ASM_LIST_F} ; do \
+		echo "[build] [amd64] [compile-asm] Compiling $${filename}.asm into $${filename}.bin..." ; \
+		nasm ${BUILD_AMD64_COMPILE_ASM_LIST_FLAG} ${BUILD_AMD64_COMPILE_ASM_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_ASM_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-amd64-compile-c
+
+BUILD_AMD64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.c, %, $(wildcard ${P_INCLUDE_AMD64}/*.c))
+
+BUILD_AMD64_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED} -I ${P_INCLUDE_AMD64} -I ${P_BUILD_AMD64}
+
+BUILD_AMD64_COMPILE_C_PATTERN_SOURCE = ${P_INCLUDE_AMD64}/$${filename}.c
+BUILD_AMD64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.o
+
+build-amd64-compile-c: build-shared-compile-c
+	@for filename in ${BUILD_AMD64_COMPILE_C_LIST_F} ; do \
+		echo "[build] [amd64] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
+		i686-elf-gcc ${BUILD_AMD64_COMPILE_C_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_C_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-amd64-compile-cpp
+
+BUILD_AMD64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.cpp, %, $(wildcard ${P_INCLUDE_AMD64}/*.cpp))
+
+BUILD_AMD64_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_AMD64}
+
+BUILD_AMD64_COMPILE_CPP_PATTERN_SOURCE = ${P_INCLUDE_AMD64}/$${filename}.cpp
+BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.o
+
+build-amd64-compile-cpp: build-shared-compile-cpp
+	@for filename in ${BUILD_AMD64_COMPILE_CPP_LIST_F} ; do \
+		echo "[build] [amd64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
+		i686-elf-g++ ${BUILD_AMD64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-amd64-link
+
+BUILD_AMD64_LINK_LIST_F = $(wildcard ${P_BUILD_SHARED}/*.bin) $(wildcard ${P_BUILD_AMD64}/*.bin) $(wildcard ${P_BUILD_SHARED}/*.o) $(wildcard ${P_BUILD_AMD64}/*.o)
+
+BUILD_AMD64_LINK_LIST_FLAG = -T ${F_LINK_SCRIPT_AMD64} -nostdlib
+
+BUILD_AMD64_LINK_F = ${F_BUILD_AMD64}
+
+build-amd64-link: build-amd64-compile-asm build-amd64-compile-c build-amd64-compile-cpp
+	@echo "[build] [amd64] [link] Linking into an amd64 build file... (${BUILD_AMD64_LINK_F})"
+	@i686-elf-ld ${BUILD_AMD64_LINK_LIST_FLAG} ${BUILD_AMD64_LINK_LIST_F} -o ${BUILD_AMD64_LINK_F}
+
+.PHONY: build-intel64-compile-asm
+
+BUILD_INTEL64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.asm, %, $(wildcard ${P_INCLUDE_INTEL64}/*.asm))
+
+BUILD_INTEL64_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_INTEL64} -I ${P_BUILD_INTEL64}
+
+BUILD_INTEL64_COMPILE_ASM_PATTERN_SOURCE = ${P_INCLUDE_INTEL64}/$${filename}.asm
+BUILD_INTEL64_COMPILE_ASM_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.bin
+
+build-intel64-compile-asm: build-shared-compile-asm
+	@for filename in ${BUILD_INTEL64_COMPILE_ASM_LIST_F} ; do \
+		echo "[build] [intel64] [compile-asm] Compiling $${filename}.asm into $${filename}.bin..." ; \
+		nasm ${BUILD_INTEL64_COMPILE_ASM_LIST_FLAG} ${BUILD_INTEL64_COMPILE_ASM_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_ASM_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-intel64-compile-c
+
+BUILD_INTEL64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.c, %, $(wildcard ${P_INCLUDE_INTEL64}/*.c))
+
+BUILD_INTEL64_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED} -I ${P_INCLUDE_INTEL64} -I ${P_BUILD_INTEL64}
+
+BUILD_INTEL64_COMPILE_C_PATTERN_SOURCE = ${P_INCLUDE_INTEL64}/$${filename}.c
+BUILD_INTEL64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.o
+
+build-intel64-compile-c: build-shared-compile-c
+	@for filename in ${BUILD_INTEL64_COMPILE_C_LIST_F} ; do \
+		echo "[build] [intel64] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
+		i686-elf-gcc ${BUILD_INTEL64_COMPILE_C_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_C_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-intel64-compile-cpp
+
+BUILD_INTEL64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.cpp, %, $(wildcard ${P_INCLUDE_INTEL64}/*.cpp))
+
+BUILD_INTEL64_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_INTEL64}
+
+BUILD_INTEL64_COMPILE_CPP_PATTERN_SOURCE = ${P_INCLUDE_INTEL64}/$${filename}.cpp
+BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.o
+
+build-intel64-compile-cpp: build-shared-compile-cpp
+	@for filename in ${BUILD_INTEL64_COMPILE_CPP_LIST_F} ; do \
+		echo "[build] [intel64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
+		i686-elf-g++ ${BUILD_INTEL64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD} ; \
+	done
+
+.PHONY: build-intel64-link
+
+BUILD_INTEL64_LINK_LIST_F = $(wildcard ${P_BUILD_SHARED}/*.bin) $(wildcard ${P_BUILD_INTEL64}/*.bin) $(wildcard ${P_BUILD_SHARED}/*.o) $(wildcard ${P_BUILD_INTEL64}/*.o)
+
+BUILD_INTEL64_LINK_LIST_FLAG = -T ${F_LINK_SCRIPT_INTEL64} -nostdlib
+
+BUILD_INTEL64_LINK_F = ${F_BUILD_INTEL64}
+
+build-intel64-link: build-intel64-compile-asm build-intel64-compile-c build-intel64-compile-cpp
+	@echo "[build] [intel64] [link] Linking into an intel64 build file... (${BUILD_INTEL64_LINK_F})"
+	@i686-elf-ld ${BUILD_INTEL64_LINK_LIST_FLAG} ${BUILD_INTEL64_LINK_LIST_F} -o ${BUILD_INTEL64_LINK_F}

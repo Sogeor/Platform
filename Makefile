@@ -21,7 +21,7 @@ intel64-bootloader:
 	make -C bootloader/bios build-intel64
 
 intel64-kernel:
-	make -C kernel x86_64
+	make -C kernel build-intel64
 
 build/intel64/intel64.raw:
 	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b intel64.bin -no-emul-boot "bootloader/bios/build/"
