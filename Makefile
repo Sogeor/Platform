@@ -30,4 +30,15 @@ build/intel64/intel64.raw:
 intel64-launch: build/intel64/intel64.raw
 	qemu-system-x86_64 -no-reboot -no-shutdown -drive format=raw,file=build/intel64/intel64.raw -net none
 
-intel64: intel64-clean intel64-setup intel64-bootloader intel64-kernel intel64-launch
+intel64: intel64-clean intel64-setup intel64-bootloader intel64-kernel build-intel64-kmdf-build intel64-launch
+
+# todo: needs refactoring
+
+# crutches
+
+.PHONY: build-intel64-kmdf-build
+
+build-intel64-kmdf-build:
+	@echo "[build] [intel64] [kmdf] [build] Starting the KMDF build for intel64..."
+	@make -C kmdf build-intel64
+	@echo "[build] [intel64] [kmdf] [build] Stopping the KMDF build for intel64..."
