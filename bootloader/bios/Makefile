@@ -98,7 +98,7 @@ build-shared-generate-include-asm:
 
 .PHONY: build-shared-compile-asm
 
-BUILD_SHARED_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.asm, %, $(wildcard ${P_INCLUDE_SHARED}/*.asm))
+BUILD_SHARED_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.asm, %, $(shell find ${P_INCLUDE_SHARED} -name *.asm -type f))
 
 BUILD_SHARED_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
 
@@ -113,7 +113,7 @@ build-shared-compile-asm: build-shared-generate-include-asm
 
 .PHONY: build-shared-compile-c
 
-BUILD_SHARED_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.c, %, $(wildcard ${P_INCLUDE_SHARED}/*.c))
+BUILD_SHARED_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.c, %, $(shell find ${P_INCLUDE_SHARED} -name *.c -type f))
 
 BUILD_SHARED_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
 
@@ -128,7 +128,7 @@ build-shared-compile-c:
 
 .PHONY: build-shared-compile-cpp
 
-BUILD_SHARED_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.cpp, %, $(wildcard ${P_INCLUDE_SHARED}/*.cpp))
+BUILD_SHARED_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.cpp, %, $(shell find ${P_INCLUDE_SHARED} -name *.cpp -type f))
 
 BUILD_SHARED_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
 
@@ -175,7 +175,7 @@ build-amd64-generate-include-asm:
 
 .PHONY: build-amd64-compile-asm
 
-BUILD_AMD64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.asm, %, $(wildcard ${P_INCLUDE_AMD64}/*.asm))
+BUILD_AMD64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.asm, %, $(shell find ${P_INCLUDE_AMD64} -name *.asm -type f))
 
 BUILD_AMD64_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_AMD64} -I ${P_BUILD_AMD64}
 
@@ -190,7 +190,7 @@ build-amd64-compile-asm: build-amd64-generate-include-asm build-shared-compile-a
 
 .PHONY: build-amd64-compile-c
 
-BUILD_AMD64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.c, %, $(wildcard ${P_INCLUDE_AMD64}/*.c))
+BUILD_AMD64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.c, %, $(shell find ${P_INCLUDE_AMD64} -name *.c -type f))
 
 BUILD_AMD64_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED} -I ${P_INCLUDE_AMD64} -I ${P_BUILD_AMD64}
 
@@ -205,7 +205,7 @@ build-amd64-compile-c: build-shared-compile-c
 
 .PHONY: build-amd64-compile-cpp
 
-BUILD_AMD64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.cpp, %, $(wildcard ${P_INCLUDE_AMD64}/*.cpp))
+BUILD_AMD64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.cpp, %, $(shell find ${P_INCLUDE_AMD64} -name *.cpp -type f))
 
 BUILD_AMD64_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_AMD64}
 
@@ -220,7 +220,7 @@ build-amd64-compile-cpp: build-shared-compile-cpp
 
 .PHONY: build-amd64-link
 
-BUILD_AMD64_LINK_LIST_F = $(wildcard ${P_BUILD_SHARED}/*.bin) $(wildcard ${P_BUILD_AMD64}/*.bin) $(wildcard ${P_BUILD_SHARED}/*.o) $(wildcard ${P_BUILD_AMD64}/*.o)
+BUILD_AMD64_LINK_LIST_F = $(shell find ${P_BUILD_SHARED} -name *.bin -type f) $(shell find ${P_BUILD_AMD64} -name *.bin -type f) $(shell find ${P_BUILD_SHARED} -name *.o -type f) $(shell find ${P_BUILD_AMD64} -name *.o -type f)
 
 BUILD_AMD64_LINK_LIST_FLAG = -T ${F_LINK_SCRIPT_AMD64} -nostdlib
 
@@ -273,7 +273,7 @@ build-intel64-generate-include-asm:
 
 .PHONY: build-intel64-compile-asm
 
-BUILD_INTEL64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.asm, %, $(wildcard ${P_INCLUDE_INTEL64}/*.asm))
+BUILD_INTEL64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.asm, %, $(shell find ${P_INCLUDE_INTEL64} -name *.asm -type f))
 
 BUILD_INTEL64_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_INTEL64} -I ${P_BUILD_INTEL64}
 
@@ -288,7 +288,7 @@ build-intel64-compile-asm: build-intel64-generate-include-asm build-shared-compi
 
 .PHONY: build-intel64-compile-c
 
-BUILD_INTEL64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.c, %, $(wildcard ${P_INCLUDE_INTEL64}/*.c))
+BUILD_INTEL64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.c, %, $(shell find ${P_INCLUDE_INTEL64} -name *.c -type f))
 
 BUILD_INTEL64_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED} -I ${P_INCLUDE_INTEL64} -I ${P_BUILD_INTEL64}
 
@@ -303,7 +303,7 @@ build-intel64-compile-c: build-shared-compile-c
 
 .PHONY: build-intel64-compile-cpp
 
-BUILD_INTEL64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.cpp, %, $(wildcard ${P_INCLUDE_INTEL64}/*.cpp))
+BUILD_INTEL64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.cpp, %, $(shell find ${P_INCLUDE_INTEL64} -name *.cpp -type f))
 
 BUILD_INTEL64_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_INTEL64}
 
@@ -318,7 +318,7 @@ build-intel64-compile-cpp: build-shared-compile-cpp
 
 .PHONY: build-intel64-link
 
-BUILD_INTEL64_LINK_LIST_F = $(wildcard ${P_BUILD_SHARED}/*.bin) $(wildcard ${P_BUILD_INTEL64}/*.bin) $(wildcard ${P_BUILD_SHARED}/*.o) $(wildcard ${P_BUILD_INTEL64}/*.o)
+BUILD_INTEL64_LINK_LIST_F = $(shell find ${P_BUILD_SHARED} -name *.bin -type f) $(shell find ${P_BUILD_INTEL64} -name *.bin -type f) $(shell find ${P_BUILD_SHARED} -name *.o -type f) $(shell find ${P_BUILD_INTEL64} -name *.o -type f)
 
 BUILD_INTEL64_LINK_LIST_FLAG = -T ${F_LINK_SCRIPT_INTEL64} -nostdlib
 
