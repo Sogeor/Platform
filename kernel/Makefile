@@ -92,7 +92,7 @@ build-intel64-prepare: clean-intel64
 
 BUILD_SHARED_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.asm, %, $(shell find ${P_INCLUDE_SHARED} -name *.asm -type f))
 
-BUILD_SHARED_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
+BUILD_SHARED_COMPILE_ASM_LIST_FLAG = -f elf64 -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
 
 BUILD_SHARED_COMPILE_ASM_PATTERN_SOURCE = ${P_INCLUDE_SHARED}/$${filename}.asm
 BUILD_SHARED_COMPILE_ASM_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.bin
@@ -115,7 +115,7 @@ BUILD_SHARED_COMPILE_C_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.o
 build-shared-compile-c:
 	@for filename in ${BUILD_SHARED_COMPILE_C_LIST_F} ; do \
 		echo "[build] [shared] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
-		i686-elf-gcc ${BUILD_SHARED_COMPILE_C_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_C_PATTERN_BUILD} ; \
+		x86_64-elf-gcc ${BUILD_SHARED_COMPILE_C_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_C_PATTERN_BUILD} ; \
 	done
 
 .PHONY: build-shared-compile-cpp
@@ -130,14 +130,14 @@ BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.o
 build-shared-compile-cpp:
 	@for filename in ${BUILD_SHARED_COMPILE_CPP_LIST_F} ; do \
 		echo "[build] [shared] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
-		i686-elf-g++ ${BUILD_SHARED_COMPILE_CPP_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD} ; \
+		x86_64-elf-g++ ${BUILD_SHARED_COMPILE_CPP_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD} ; \
 	done
 
 .PHONY: build-amd64-compile-asm
 
 BUILD_AMD64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.asm, %, $(shell find ${P_INCLUDE_AMD64} -name *.asm -type f))
 
-BUILD_AMD64_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_AMD64} -I ${P_BUILD_AMD64}
+BUILD_AMD64_COMPILE_ASM_LIST_FLAG = -f elf64 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_AMD64} -I ${P_BUILD_AMD64}
 
 BUILD_AMD64_COMPILE_ASM_PATTERN_SOURCE = ${P_INCLUDE_AMD64}/$${filename}.asm
 BUILD_AMD64_COMPILE_ASM_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.bin
@@ -160,7 +160,7 @@ BUILD_AMD64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.o
 build-amd64-compile-c: build-shared-compile-c
 	@for filename in ${BUILD_AMD64_COMPILE_C_LIST_F} ; do \
 		echo "[build] [amd64] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
-		i686-elf-gcc ${BUILD_AMD64_COMPILE_C_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_C_PATTERN_BUILD} ; \
+		x86_64-elf-gcc ${BUILD_AMD64_COMPILE_C_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_C_PATTERN_BUILD} ; \
 	done
 
 .PHONY: build-amd64-compile-cpp
@@ -175,7 +175,7 @@ BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.o
 build-amd64-compile-cpp: build-shared-compile-cpp
 	@for filename in ${BUILD_AMD64_COMPILE_CPP_LIST_F} ; do \
 		echo "[build] [amd64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
-		i686-elf-g++ ${BUILD_AMD64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD} ; \
+		x86_64-elf-g++ ${BUILD_AMD64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD} ; \
 	done
 
 .PHONY: build-amd64-link
@@ -188,13 +188,13 @@ BUILD_AMD64_LINK_F = ${F_BUILD_AMD64}
 
 build-amd64-link: build-amd64-compile-asm build-amd64-compile-c build-amd64-compile-cpp
 	@echo "[build] [amd64] [link] Linking into an amd64 build file... (${BUILD_AMD64_LINK_F})"
-	@i686-elf-ld ${BUILD_AMD64_LINK_LIST_FLAG} ${BUILD_AMD64_LINK_LIST_F} -o ${BUILD_AMD64_LINK_F}
+	@x86_64-elf-ld ${BUILD_AMD64_LINK_LIST_FLAG} ${BUILD_AMD64_LINK_LIST_F} -o ${BUILD_AMD64_LINK_F}
 
 .PHONY: build-intel64-compile-asm
 
 BUILD_INTEL64_COMPILE_ASM_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.asm, %, $(shell find ${P_INCLUDE_INTEL64} -name *.asm -type f))
 
-BUILD_INTEL64_COMPILE_ASM_LIST_FLAG = -f elf32 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_INTEL64} -I ${P_BUILD_INTEL64}
+BUILD_INTEL64_COMPILE_ASM_LIST_FLAG = -f elf64 -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_INTEL64} -I ${P_BUILD_INTEL64}
 
 BUILD_INTEL64_COMPILE_ASM_PATTERN_SOURCE = ${P_INCLUDE_INTEL64}/$${filename}.asm
 BUILD_INTEL64_COMPILE_ASM_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.bin
@@ -217,7 +217,7 @@ BUILD_INTEL64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.o
 build-intel64-compile-c: build-shared-compile-c
 	@for filename in ${BUILD_INTEL64_COMPILE_C_LIST_F} ; do \
 		echo "[build] [intel64] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
-		i686-elf-gcc ${BUILD_INTEL64_COMPILE_C_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_C_PATTERN_BUILD} ; \
+		x86_64-elf-gcc ${BUILD_INTEL64_COMPILE_C_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_C_PATTERN_BUILD} ; \
 	done
 
 .PHONY: build-intel64-compile-cpp
@@ -232,7 +232,7 @@ BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.o
 build-intel64-compile-cpp: build-shared-compile-cpp
 	@for filename in ${BUILD_INTEL64_COMPILE_CPP_LIST_F} ; do \
 		echo "[build] [intel64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
-		i686-elf-g++ ${BUILD_INTEL64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD} ; \
+		x86_64-elf-g++ ${BUILD_INTEL64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD} ; \
 	done
 
 .PHONY: build-intel64-link
@@ -245,4 +245,4 @@ BUILD_INTEL64_LINK_F = ${F_BUILD_INTEL64}
 
 build-intel64-link: build-intel64-compile-asm build-intel64-compile-c build-intel64-compile-cpp
 	@echo "[build] [intel64] [link] Linking into an intel64 build file... (${BUILD_INTEL64_LINK_F})"
-	@i686-elf-ld ${BUILD_INTEL64_LINK_LIST_FLAG} ${BUILD_INTEL64_LINK_LIST_F} -o ${BUILD_INTEL64_LINK_F}
+	@x86_64-elf-ld ${BUILD_INTEL64_LINK_LIST_FLAG} ${BUILD_INTEL64_LINK_LIST_F} -o ${BUILD_INTEL64_LINK_F}

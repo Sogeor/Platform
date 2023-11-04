@@ -1,24 +1,26 @@
 #include "gdt.h"
 
-void gdt_write_entry(gdt_entry_t *entry, uint64_t base, uint32_t limit, uint8_t access, uint8_t flags) {
-    entry->base_1            = (uint16_t) base;
-    entry->base_2            = (uint8_t)(base >> 16);
-    entry->base_3            = (uint8_t)(base >> 24);
-    entry->base_4            = (uint32_t)(base >> 32);
-    entry->limit_1           = (uint16_t) limit;
-    entry->limit_2_and_flags = (uint8_t)(limit & 0xFFFFF >> 16);
-    entry->access            = access;
-    entry->limit_2_and_flags |= flags << 4;
+void gdt_read_entity(gdt_raw_entity_t *ptr, gdt_entity_t *entity) {
+    entity->base = ((*ptr & 0xFFFFFF0000) + (*ptr & 0xFF00000000000000)) >> 16;
+    entity->limit = (*ptr & 0xFFFF) + (*ptr & 0xF000000000000);
+    entity->access = (*ptr >> 40) & 0xFF;
+    entity->flags = (*ptr >> 52) & 0xF;
 }
 
-void gdt_write_entry_info(gdt_entry_t *entry, gdt_entry_info_t *entry_info) {
-    gdt_write_entry(entry, entry_info->base, entry_info->limit, entry_info->access, entry_info->flags);
+void gdt_write(gdt_raw_entity_t *ptr, uint64_t base, uint32_t limit, uint8_t access, uint8_t flags) {
+    *ptr = limit & 0xFFFF;
+    *ptr = (base & 0xFFFFFF) << 16;
+    *ptr = (uint64_t) access << 40;
+    *ptr = (uint64_t) (limit & 0xF0000) << 48;
+    *ptr = (uint64_t) flags << 52;
+    *ptr = (base & 0xF000000) << 56;
+    ptr[1] = base >> 32;
 }
 
-void gdt_read_entry_info(gdt_entry_t *entry, gdt_entry_info_t *entry_info) {
-    entry_info->base   = (uint64_t) entry->base_1 | (uint64_t) entry->base_2 << 16 | (uint64_t) entry->base_3 << 24 |
-                         (uint64_t) entry->base_4 << 32;
-    entry_info->limit  = (uint32_t) entry->limit_1 | (uint32_t)(entry->limit_2_and_flags & 0xF) << 16;
-    entry_info->access = entry->access;
-    entry_info->flags  = entry->limit_2_and_flags & 0xF0 >> 4;
+void gdt_write_entity(gdt_raw_entity_t *ptr, gdt_entity_t *entity) {
+    gdt_write(ptr, entity->base, entity->limit, entity->access, entity->flags);
+}
+
+void gdt_clear_entity(gdt_raw_entity_t *ptr) {
+    *ptr = 0;
 }

@@ -1,27 +1,22 @@
 #pragma once
 
-#include "stdint.h"
+#include <stdint.h>
 
-typedef struct gdt_entry_s {
-    uint16_t limit_1;
-    uint16_t base_1;
-    uint8_t base_2;
-    uint8_t access;
-    uint8_t limit_2_and_flags;
-    uint8_t base_3;
-    uint32_t base_4;
-    uint32_t reserved;
-} __attribute__((packed)) gdt_entry_t;
+typedef uint64_t gdt_raw_entity_t;
 
-typedef struct gdt_entry_info_s {
+typedef struct gdt_entity_s {
     uint64_t base;
     uint32_t limit;
     uint8_t access;
     uint8_t flags;
-} __attribute__((packed)) gdt_entry_info_t;
+} __attribute__((packed)) gdt_entity_t;
 
-void gdt_write_entry(gdt_entry_t *entry, uint64_t base, uint32_t limit, uint8_t access, uint8_t flags);
+extern void gdt_load(uint16_t size, uint64_t offset);
 
-void gdt_write_entry_info(gdt_entry_t *entry, gdt_entry_info_t *entry_info);
+void gdt_read_entity(gdt_raw_entity_t *ptr, gdt_entity_t *entity);
 
-void gdt_read_entry_info(gdt_entry_t *entry, gdt_entry_info_t *entry_info);
+void gdt_write(gdt_raw_entity_t *ptr, uint64_t base, uint32_t limit, uint8_t access, uint8_t flags);
+
+void gdt_write_entity(gdt_raw_entity_t *ptr, gdt_entity_t *entity);
+
+void gdt_clear_entity(gdt_raw_entity_t *ptr);
