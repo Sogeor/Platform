@@ -9,11 +9,11 @@ void gdt_read_entity(gdt_raw_entity_t *ptr, gdt_entity_t *entity) {
 
 void gdt_write(gdt_raw_entity_t *ptr, uint64_t base, uint32_t limit, uint8_t access, uint8_t flags) {
     *ptr = limit & 0xFFFF;
-    *ptr = (base & 0xFFFFFF) << 16;
-    *ptr = (uint64_t) access << 40;
-    *ptr = (uint64_t) (limit & 0xF0000) << 48;
-    *ptr = (uint64_t) flags << 52;
-    *ptr = (base & 0xF000000) << 56;
+    *ptr += (base & 0xFFFFFF) << 16;
+    *ptr += (uint64_t) access << 40;
+    *ptr += (uint64_t) (limit & 0xF0000) << 48;
+    *ptr += (uint64_t) flags << 52;
+    *ptr += (base & 0xF000000) << 56;
     ptr[1] = base >> 32;
 }
 
