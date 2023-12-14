@@ -23,7 +23,7 @@ interrupt:
 .bridge:
     bits 16
     mov eax, cr0
-    and eax, 0xFFFFFFFFFFFFFFFE
+    and eax, ~1
     mov cr0, eax
     jmp 0x00:.call ; Null
 .call:

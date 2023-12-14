@@ -2,7 +2,8 @@
 
 #include <stdint.h>
 
-#include "injector.h"
+#include "interrupt.h"
+#include "pmode.h"
 #include "utils.h"
 
 #define VBE_MODE_NUMBER_LIST_TERMINATION 0xFFFF

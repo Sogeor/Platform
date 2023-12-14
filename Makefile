@@ -4,7 +4,7 @@ all: intel64
 
 clean:
 	rm -rf build
-	make -C bootloader/bios clean
+	make -C hdk/bootloader/bios clean
 	make -C kernel clean
 
 setup:
@@ -18,27 +18,19 @@ intel64-setup: intel64-clean setup
 	mkdir build/intel64
 
 intel64-bootloader:
-	make -C bootloader/bios build-intel64
+	make -C hdk/bootloader/bios intel64
+#	make -C bootloader/bios build-intel64
 
 intel64-kernel:
 	make -C kernel build-intel64
 
 build/intel64/intel64.raw:
-	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b intel64.bin -no-emul-boot "bootloader/bios/build/"
-	dd if=bootloader/bios/build/intel64.bin of=build/intel64/intel64.raw conv=notrunc
+	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b intel64.bin -no-emul-boot "hdk/bootloader/bios/build/"
+	dd if=hdk/bootloader/bios/build/intel64.bin of=build/intel64/intel64.raw conv=notrunc
+#	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b intel64.bin -no-emul-boot "bootloader/bios/build/"
+#	dd if=bootloader/bios/build/intel64.bin of=build/intel64/intel64.raw conv=notrunc
 
 intel64-launch: build/intel64/intel64.raw
 	qemu-system-x86_64 -no-reboot -no-shutdown -drive format=raw,file=build/intel64/intel64.raw -net none
 
-intel64: intel64-clean intel64-setup intel64-bootloader intel64-kernel build-intel64-kmdf-build intel64-launch
-
-# todo: needs refactoring
-
-# crutches
-
-.PHONY: build-intel64-kmdf-build
-
-build-intel64-kmdf-build:
-	@echo "[build] [intel64] [kmdf] [build] Starting the KMDF build for intel64..."
-	@make -C kmdf build-intel64
-	@echo "[build] [intel64] [kmdf] [build] Stopping the KMDF build for intel64..."
+intel64: intel64-clean intel64-setup intel64-bootloader intel64-launch

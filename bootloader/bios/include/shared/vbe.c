@@ -1,16 +1,36 @@
 #include "vbe.h"
 
-__asm__(".code16gcc");
+__asm__(".code32");
 
 vbe_func_result_t vbe_get_controller_info() {
     vbe_func_result_t result;
-    __asm__("call vbe_update_controller_info" : "=a"(result));
+    interrupt_context.code = 0x10;
+    interrupt_context.ax = 0x4F00;
+    interrupt_context.bx = 0;
+    interrupt_context.cx = 0;
+    interrupt_context.dx = 0;
+    interrupt_context.si = 0;
+    interrupt_context.di = 0;
+    interrupt();
+    result.al = (uint8_t) interrupt_context.ax;
+    result.ah = (uint8_t) (interrupt_context.ax >> 8);
+//    __asm__("call vbe_update_controller_info" : "=a"(result));
     return result;
 }
 
 vbe_func_result_t vbe_get_mode_info(uint16_t mode_number) {
     vbe_func_result_t result;
-    __asm__("call vbe_update_mode_info" : "=a"(result) : "c"(mode_number));
+    interrupt_context.code = 0x10;
+    interrupt_context.ax = 0x4F01;
+    interrupt_context.bx = 0;
+    interrupt_context.cx = mode_number;
+    interrupt_context.dx = 0;
+    interrupt_context.si = 0;
+    interrupt_context.di = &vbe_mode_info;
+    interrupt();
+    result.al = (uint8_t) interrupt_context.ax;
+    result.ah = (uint8_t) (interrupt_context.ax >> 8);
+//    __asm__("call vbe_update_mode_info" : "=a"(result) : "c"(mode_number));
     return result;
 }
 
@@ -45,6 +65,16 @@ vbe_func_result_t vbe_select_mode_info() {
 
 vbe_func_result_t vbe_select_mode(uint16_t mode_number) {
     vbe_func_result_t result;
-    __asm__("call vbe_update_mode" : "=a"(result) : "b"(mode_number));
+    interrupt_context.code = 0x10;
+    interrupt_context.ax = 0x4F02;
+    interrupt_context.bx = mode_number;
+    interrupt_context.cx = 0;
+    interrupt_context.dx = 0;
+    interrupt_context.si = 0;
+    interrupt_context.di = 0;
+    interrupt();
+    result.al = (uint8_t) interrupt_context.ax;
+    result.ah = (uint8_t) (interrupt_context.ax >> 8);
+//    __asm__("call vbe_update_mode" : "=a"(result) : "b"(mode_number));
     return result;
 }

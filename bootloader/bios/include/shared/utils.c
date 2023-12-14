@@ -1,6 +1,6 @@
 #include "utils.h"
 
-__asm__(".code16gcc");
+__asm__(".code32");
 
 uint32_t util_parse_r_ptr(r_ptr_t *r_ptr) {
     return r_ptr->segment * 16 + r_ptr->offset;

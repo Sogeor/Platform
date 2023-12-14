@@ -107,6 +107,10 @@ BUILD_SHARED_COMPILE_ASM_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.bin
 
 build-shared-compile-asm: build-shared-generate-include-asm
 	@for filename in ${BUILD_SHARED_COMPILE_ASM_LIST_F} ; do \
+		echo "[build] [shared] [compile-asm] Creating subdirectory $${filename}..." ; \
+		mkdir -p "${P_BUILD_SHARED}/$(patsubst %$(basename ${filename}), %, ${filename})" ; \
+	done
+	@for filename in ${BUILD_SHARED_COMPILE_ASM_LIST_F} ; do \
 		echo "[build] [shared] [compile-asm] Compiling $${filename}.asm into $${filename}.bin..." ; \
 		nasm ${BUILD_SHARED_COMPILE_ASM_LIST_FLAG} ${BUILD_SHARED_COMPILE_ASM_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_ASM_PATTERN_BUILD} ; \
 	done
@@ -118,11 +122,11 @@ BUILD_SHARED_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.c, %, $(shell f
 BUILD_SHARED_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
 
 BUILD_SHARED_COMPILE_C_PATTERN_SOURCE = ${P_INCLUDE_SHARED}/$${filename}.c
-BUILD_SHARED_COMPILE_C_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.o
+BUILD_SHARED_COMPILE_C_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.c.o
 
 build-shared-compile-c:
 	@for filename in ${BUILD_SHARED_COMPILE_C_LIST_F} ; do \
-		echo "[build] [shared] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
+		echo "[build] [shared] [compile-c] Compiling $${filename}.c into $${filename}.c.o..." ; \
 		i686-elf-gcc ${BUILD_SHARED_COMPILE_C_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_C_PATTERN_BUILD} ; \
 	done
 
@@ -133,11 +137,11 @@ BUILD_SHARED_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_SHARED}/%.cpp, %, $(she
 BUILD_SHARED_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED}
 
 BUILD_SHARED_COMPILE_CPP_PATTERN_SOURCE = ${P_INCLUDE_SHARED}/$${filename}.cpp
-BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.o
+BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_SHARED}/$${filename}.cpp.o
 
 build-shared-compile-cpp:
 	@for filename in ${BUILD_SHARED_COMPILE_CPP_LIST_F} ; do \
-		echo "[build] [shared] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
+		echo "[build] [shared] [compile-cpp] Compiling $${filename}.cpp into $${filename}.cpp.o..." ; \
 		i686-elf-g++ ${BUILD_SHARED_COMPILE_CPP_LIST_FLAG} -c ${BUILD_SHARED_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_SHARED_COMPILE_CPP_PATTERN_BUILD} ; \
 	done
 
@@ -195,11 +199,11 @@ BUILD_AMD64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.c, %, $(shell fin
 BUILD_AMD64_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED} -I ${P_INCLUDE_AMD64} -I ${P_BUILD_AMD64}
 
 BUILD_AMD64_COMPILE_C_PATTERN_SOURCE = ${P_INCLUDE_AMD64}/$${filename}.c
-BUILD_AMD64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.o
+BUILD_AMD64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.c.o
 
 build-amd64-compile-c: build-shared-compile-c
 	@for filename in ${BUILD_AMD64_COMPILE_C_LIST_F} ; do \
-		echo "[build] [amd64] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
+		echo "[build] [amd64] [compile-c] Compiling $${filename}.c into $${filename}.c.o..." ; \
 		i686-elf-gcc ${BUILD_AMD64_COMPILE_C_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_C_PATTERN_BUILD} ; \
 	done
 
@@ -210,11 +214,11 @@ BUILD_AMD64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_AMD64}/%.cpp, %, $(shell
 BUILD_AMD64_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_AMD64}
 
 BUILD_AMD64_COMPILE_CPP_PATTERN_SOURCE = ${P_INCLUDE_AMD64}/$${filename}.cpp
-BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.o
+BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_AMD64}/$${filename}.cpp.o
 
 build-amd64-compile-cpp: build-shared-compile-cpp
 	@for filename in ${BUILD_AMD64_COMPILE_CPP_LIST_F} ; do \
-		echo "[build] [amd64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
+		echo "[build] [amd64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.cpp.o..." ; \
 		i686-elf-g++ ${BUILD_AMD64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_AMD64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_AMD64_COMPILE_CPP_PATTERN_BUILD} ; \
 	done
 
@@ -293,11 +297,11 @@ BUILD_INTEL64_COMPILE_C_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.c, %, $(shell
 BUILD_INTEL64_COMPILE_C_LIST_FLAG = -O0 -std=gnu17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_BUILD_SHARED} -I ${P_INCLUDE_INTEL64} -I ${P_BUILD_INTEL64}
 
 BUILD_INTEL64_COMPILE_C_PATTERN_SOURCE = ${P_INCLUDE_INTEL64}/$${filename}.c
-BUILD_INTEL64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.o
+BUILD_INTEL64_COMPILE_C_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.c.o
 
 build-intel64-compile-c: build-shared-compile-c
 	@for filename in ${BUILD_INTEL64_COMPILE_C_LIST_F} ; do \
-		echo "[build] [intel64] [compile-c] Compiling $${filename}.c into $${filename}.o..." ; \
+		echo "[build] [intel64] [compile-c] Compiling $${filename}.c into $${filename}.c.o..." ; \
 		i686-elf-gcc ${BUILD_INTEL64_COMPILE_C_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_C_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_C_PATTERN_BUILD} ; \
 	done
 
@@ -308,11 +312,11 @@ BUILD_INTEL64_COMPILE_CPP_LIST_F = $(patsubst ${P_INCLUDE_INTEL64}/%.cpp, %, $(s
 BUILD_INTEL64_COMPILE_CPP_LIST_FLAG = -O0 -std=gnu++17 -ffreestanding -Wall -I ${P_INCLUDE_SHARED} -I ${P_INCLUDE_INTEL64}
 
 BUILD_INTEL64_COMPILE_CPP_PATTERN_SOURCE = ${P_INCLUDE_INTEL64}/$${filename}.cpp
-BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.o
+BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD = ${P_BUILD_INTEL64}/$${filename}.cpp.o
 
 build-intel64-compile-cpp: build-shared-compile-cpp
 	@for filename in ${BUILD_INTEL64_COMPILE_CPP_LIST_F} ; do \
-		echo "[build] [intel64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.o..." ; \
+		echo "[build] [intel64] [compile-cpp] Compiling $${filename}.cpp into $${filename}.cpp.o..." ; \
 		i686-elf-g++ ${BUILD_INTEL64_COMPILE_CPP_LIST_FLAG} -c ${BUILD_INTEL64_COMPILE_CPP_PATTERN_SOURCE} -o ${BUILD_INTEL64_COMPILE_CPP_PATTERN_BUILD} ; \
 	done
 

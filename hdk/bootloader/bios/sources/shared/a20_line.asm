@@ -1,40 +1,35 @@
-extern halt
-extern println
+extern __halt__
 
-global a20_line_prepare
-global a20_line_check
-global a20_line_enable_using_bios
-global a20_line_enable_using_ps2_controller
-global a20_line_enable_using_fast_gate
+global __a20_line_prepare__
+global __a20_line_check__
+global __a20_line_enable_using_bios__
+global __a20_line_enable_using_ps2_controller__
+global __a20_line_enable_using_fast_gate__
 
 section .a20_line
 bits 16
 
-a20_line_prepare:
-    mov si, A20_LINE_PREPARE
-    call println
-    call a20_line_check
+__a20_line_prepare__:
+    call __a20_line_check__
     cmp ax, 0
     jz .free
-    call a20_line_enable_using_bios
-    call a20_line_check
+    call __a20_line_enable_using_bios__
+    call __a20_line_check__
     cmp ax, 0
     jz .free
-    call a20_line_enable_using_ps2_controller
-    call a20_line_check
+    call __a20_line_enable_using_ps2_controller__
+    call __a20_line_check__
     cmp ax, 0
     jz .free
-    call a20_line_enable_using_fast_gate
-    call a20_line_check
+    call __a20_line_enable_using_fast_gate__
+    call __a20_line_check__
     cmp ax, 0
     jz .free
-    jmp halt
+    jmp __halt__
 .free:
     ret
 
-a20_line_check:
-    mov si, A20_LINE_CHECK
-    call println
+__a20_line_check__:
     cli
     push ds
     push es
@@ -71,9 +66,7 @@ a20_line_check:
     sti
     ret
 
-a20_line_enable_using_bios:
-    mov si, A20_LINE_ENABLE_USING_BIOS
-    call println
+__a20_line_enable_using_bios__:
     mov ax, 0x2403
     int 0x15
     jb .not_supported
@@ -107,9 +100,7 @@ a20_line_enable_using_bios:
     mov ax, 4
     ret
 
-a20_line_enable_using_ps2_controller:
-    mov si, A20_LINE_ENABLE_USING_PS2_CONTROLLER
-    call println
+__a20_line_enable_using_ps2_controller__:
     cli
     call .wait_1
     mov al, 0xAD
@@ -144,9 +135,7 @@ a20_line_enable_using_ps2_controller:
     jz .wait_2
     ret
 
-a20_line_enable_using_fast_gate:
-    mov si, A20_LINE_ENABLE_USING_FAST_GATE
-    call println
+__a20_line_enable_using_fast_gate__:
     in al, 0x92
     test al, 2
     jnz .free
@@ -155,9 +144,3 @@ a20_line_enable_using_fast_gate:
     out 0x92, al
 .free:
     ret
-
-A20_LINE_PREPARE: db 'Preparing the A20 line...', 0
-A20_LINE_CHECK: db 'Checking the A20 line...', 0
-A20_LINE_ENABLE_USING_BIOS: db 'Trying to enable the A20 line using the BIOS...', 0
-A20_LINE_ENABLE_USING_PS2_CONTROLLER: db 'Trying to enable the A20 line using the PS/2 controller...', 0
-A20_LINE_ENABLE_USING_FAST_GATE: db 'Trying to enable the A20 line using fast gate...', 0
