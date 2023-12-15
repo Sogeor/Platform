@@ -4,10 +4,13 @@ global __gdt_end
 
 section .gdt
 bits 16
+align 2
 
 __gdtr:
     dw (__gdt_end - __gdt_base - 1)
     dd __gdt_base
+
+align 8
 
 __gdt_base:
     dq 0

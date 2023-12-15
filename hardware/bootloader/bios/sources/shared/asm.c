@@ -2,11 +2,6 @@
 
 __asm__(".code16gcc");
 
-void halt()
-{
-    __halt__();
-}
-
 void print(const char *string)
 {
     __asm__("call __print__" : : "S"(string));

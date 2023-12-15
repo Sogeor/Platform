@@ -19,7 +19,7 @@ namespace pmode {
     /**
      * @brief Содержит данные о курсоре.
      * */
-    static cursor_t cursor;
+    extern static cursor_t cursor;
 
     /**
      * @brief Печатает символ на экран.

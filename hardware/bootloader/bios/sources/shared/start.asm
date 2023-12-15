@@ -3,8 +3,19 @@
 extern __main__
 
 global __halt__
+global __disk
+global __number_of_sectors
 global __print__
+global __crlf
 global __println__
+global __dap
+global __dap_size
+global __dap_reserved
+global __dap_number_of_sectors
+global __dap_buffer_offset
+global __dap_buffer_segment
+global __dap_lba_lower
+global __dap_lba_upper
 global __read_sectors__
 
 section .start
@@ -16,8 +27,8 @@ jmp 0x0:__start__
 __start__:
     mov [__disk], dl
     xor cx, cx
-    xor si, si
     xor di, di
+    xor si, si
     mov bp, cx
     mov sp, __start__
     mov ds, cx

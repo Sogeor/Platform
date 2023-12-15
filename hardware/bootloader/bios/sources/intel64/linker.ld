@@ -13,6 +13,7 @@ SECTIONS {
 		*(.gdt)
 		*(.lifecycle)
 		*(.interrupt)
+		*(.vbe)
 		*(.text)
 	}
 
