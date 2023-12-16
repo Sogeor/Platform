@@ -1,7 +1,9 @@
 extern __gdtr
+extern __vbe_mode_brief
 
 global __pmode_enter__
 global __pmode_leave__
+global __pmode_clear_screen__
 global __pmode_cursor
 global __pmode_cursor_x
 global __pmode_cursor_y
@@ -57,15 +59,13 @@ bits 16
 
 bits 32
 
-bits 32
-
 __pmode_clear_screen__:
     push eax
     push ecx
     push edi
     mov al, 0
     mov ecx, 0
-;    mov cx, [vbe_mode_summary + 6]
+    mov cx, [__vbe_mode_brief + 6]
     mov edi, 0xB8000
     rep stosb
     pop edi
@@ -73,7 +73,7 @@ __pmode_clear_screen__:
     pop eax
     ret
 
-align 1
+align 2
 
 __pmode_cursor:
 __pmode_cursor_x: dw 0

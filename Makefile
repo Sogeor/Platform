@@ -5,6 +5,7 @@ all: intel64
 clean:
 	rm -rf build
 	make -C hardware/bootloader/bios clean
+	make -C hardware/kernel clean
 	make -C kernel clean
 
 setup:
@@ -22,7 +23,8 @@ intel64-bootloader:
 #	make -C bootloader/bios build-intel64
 
 intel64-kernel:
-	make -C kernel build-intel64
+	make -C hardware/kernel intel64
+	#make -C kernel build-intel64
 
 build/intel64/intel64.raw:
 	mkisofs -V "BOOTLOADER" -o build/intel64/intel64.raw -b intel64.bin -no-emul-boot "hardware/bootloader/bios/build/"
@@ -33,4 +35,4 @@ build/intel64/intel64.raw:
 intel64-launch: build/intel64/intel64.raw
 	qemu-system-x86_64 -no-reboot -no-shutdown -drive format=raw,file=build/intel64/intel64.raw -net none
 
-intel64: intel64-clean intel64-setup intel64-bootloader intel64-launch
+intel64: intel64-clean intel64-setup intel64-bootloader intel64-kernel intel64-launch

@@ -12,7 +12,8 @@ SECTIONS {
 		*(.a20_line)
 		*(.gdt)
 		*(.lifecycle)
-		*(.interrupt)
+		*(.rmode)
+		*(.pmode)
 		*(.vbe)
 		*(.text)
 	}

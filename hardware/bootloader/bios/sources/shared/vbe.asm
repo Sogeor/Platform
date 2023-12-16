@@ -1,14 +1,14 @@
-global __vbe_update_controller_info__
-global __vbe_update_mode_info__
-global __vbe_update_mode__
+global __vbe_get_controller_info__
+global __vbe_get_mode_info__
+global __vbe_set_mode__
 global __vbe_controller_info
 global __vbe_mode_info
-global __vbe_mode_summary
+global __vbe_mode_brief
 
 section .vbe
 bits 16
 
-__vbe_update_controller_info__:
+__vbe_get_controller_info__:
     push di
     push es
     xor ax, ax
@@ -20,7 +20,7 @@ __vbe_update_controller_info__:
     pop di
     ret
 
-__vbe_update_mode_info__:
+__vbe_get_mode_info__:
     push di
     push es
     xor ax, ax
@@ -32,7 +32,7 @@ __vbe_update_mode_info__:
     pop di
     ret
 
-__vbe_update_mode__:
+__vbe_set_mode__:
     push di
     push es
     xor ax, ax
@@ -48,4 +48,4 @@ __vbe_controller_info: times 512 db 0
 
 __vbe_mode_info: times 256 db 0
 
-__vbe_mode_summary: times 8 db 0
+__vbe_mode_brief: times 8 db 0

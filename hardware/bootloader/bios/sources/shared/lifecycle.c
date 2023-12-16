@@ -4,12 +4,12 @@ __asm__(".code16gcc");
 
 __attribute__((section(".lifecycle"))) void __lifecycle__()
 {
-    println("hello world");
     __pmode_enter__();
     __asm__(".code32");
-    // pmode
-    pmode_println("hello pmode world");
-    __pmode_leave__();
-    __asm__(".code16gcc");
-    println("hello world");
+    vbe_get_controller_info();
+    pmode_clear_screen();
+    vbe_select_mode_info();
+    pmode_println_string("hello pmode world");
+    pmode_println_string("hello pmode world");
+    vbe_select_mode();
 }
