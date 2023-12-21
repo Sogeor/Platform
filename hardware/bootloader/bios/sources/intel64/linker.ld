@@ -7,10 +7,14 @@ SECTIONS {
 
 	.text : {
 		code = .;
-		*(.start)
+		*(.boot)
 		*(.main)
-		*(.a20_line)
+		*(.a20)
 		*(.gdt)
+/*		*(.io)*/
+		*(.ptr)
+		*(.pm)
+		*(.jmp)
 		*(.lifecycle)
 		*(.rmode)
 		*(.pmode)

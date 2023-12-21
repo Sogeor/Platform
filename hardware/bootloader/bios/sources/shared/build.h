@@ -1,8 +1,12 @@
-#pragma once
+#ifndef BUILD_H
+#define BUILD_H
 
-#define BUILD_TYPE_DEBUG 1
-#define BUILD_TYPE_RELEASE 0
+#pragma region BUILD_TYPE
+
+#define BUILD_TYPE_DEBUG 0
+#define BUILD_TYPE_RELEASE 1
 #define BUILD_TYPE BUILD_TYPE_DEBUG
 
-#define BUILD_DEBUG_VBE_MAX_WIDTH 1280
-#define BUILD_DEBUG_VBE_MAX_HEIGHT 720
+#pragma endregion BUILD_TYPE
+
+#endif // BUILD_H

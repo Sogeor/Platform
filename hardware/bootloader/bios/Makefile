@@ -46,14 +46,17 @@ shared-prepare:
 
 ${SHARED_PATH_BUILD}/%.bin: ${SHARED_PATH_SOURCES}/%.asm
 	@echo "[shared] [compile] [asm] Compiling $^ into $@..."
+	@mkdir -p $(dir $@)
 	@${SHARED_TOOL_COMPILE_ASM} ${SHARED_FLAGS_COMPILE_ASM} $^ -o $@
 
 ${SHARED_PATH_BUILD}/%.o: ${SHARED_PATH_SOURCES}/%.c
 	@echo "[shared] [compile] [c] Compiling $^ into $@..."
+	@mkdir -p $(dir $@)
 	@${SHARED_TOOL_COMPILE_C} ${SHARED_FLAGS_COMPILE_C} -c $^ -o $@
 
 ${SHARED_PATH_BUILD}/%.obj: ${SHARED_PATH_SOURCES}/%.cpp
 	@echo "[shared] [compile] [cpp] Compiling $^ into $@..."
+	@mkdir -p $(dir $@)
 	@${SHARED_TOOL_COMPILE_CPP} ${SHARED_FLAGS_COMPILE_CPP} -c $^ -o $@
 
 # INTEL64 VARIABLES
@@ -97,7 +100,7 @@ intel64-prepare: shared-prepare
 
 intel64-generate-include-asm:
 	@echo "[intel64] [generate] [include] [asm] Generating an asm include file... (${INTEL64_INCLUDE_ASM})"
-	@printf "%%define NUMBER_OF_SECTORS %s" $(shell expr $(shell expr $(shell wc -c < ${INTEL64_OUTPUT_LINK}) + 511) / 512) > ${INTEL64_INCLUDE_ASM}
+	@printf "%%define BOOT_SECTORS %s" $(shell expr $(shell expr $(shell wc -c < ${INTEL64_OUTPUT_LINK}) + 511) / 512) > ${INTEL64_INCLUDE_ASM}
 
 intel64-link: $(SHARED_OBJECTS_ASM) $(SHARED_OBJECTS_C) $(SHARED_OBJECTS_CPP) $(INTEL64_OBJECTS_ASM) $(INTEL64_OBJECTS_C) $(INTEL64_OBJECTS_CPP)
 	@echo "[intel64] [link] Linking into an intel64 build file... (${INTEL64_OUTPUT_LINK})"
@@ -105,12 +108,15 @@ intel64-link: $(SHARED_OBJECTS_ASM) $(SHARED_OBJECTS_C) $(SHARED_OBJECTS_CPP) $(
 
 ${INTEL64_PATH_BUILD}/%.bin: ${INTEL64_PATH_SOURCES}/%.asm
 	@echo "[intel64] [compile] [asm] Compiling $^ into $@..."
+	@mkdir -p $(dir $@)
 	@${INTEL64_TOOL_COMPILE_ASM} ${INTEL64_FLAGS_COMPILE_ASM} $^ -o $@
 
 ${INTEL64_PATH_BUILD}/%.o: ${INTEL64_PATH_SOURCES}/%.c
 	@echo "[intel64] [compile] [c] Compiling $^ into $@..."
+	@mkdir -p $(dir $@)
 	@${INTEL64_TOOL_COMPILE_C} ${INTEL64_FLAGS_COMPILE_C} -c $^ -o $@
 
 ${INTEL64_PATH_BUILD}/%.obj: ${INTEL64_PATH_SOURCES}/%.cpp
 	@echo "[intel64] [compile] [cpp] Compiling $^ into $@..."
+	@mkdir -p $(dir $@)
 	@${INTEL64_TOOL_COMPILE_CPP} ${INTEL64_FLAGS_COMPILE_CPP} -c $^ -o $@

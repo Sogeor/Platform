@@ -1,16 +1,22 @@
-global __gdtr
+global __gdt_load
+global __gdt_desc
 global __gdt_base
 global __gdt_end
 
 section .gdt
 bits 16
-align 2
 
-__gdtr:
+__gdt_load:
+    lgdt [__gdt_desc]
+    ret
+
+align 16
+
+__gdt_desc:
     dw (__gdt_end - __gdt_base - 1)
     dd __gdt_base
 
-align 8
+align 16
 
 __gdt_base:
     dq 0

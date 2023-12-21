@@ -1,17 +1,13 @@
-extern __gdtr
 extern __vbe_mode_brief
+global __pm_enter
+global __pm_leave
+global __pm_clear_screen
+global __pm_cursor
 
-global __pmode_enter__
-global __pmode_leave__
-global __pmode_clear_screen__
-global __pmode_cursor
-global __pmode_cursor_x
-global __pmode_cursor_y
-
-section .pmode
+section .pm
 bits 16
 
-__pmode_enter__:
+__pm_enter:
     cli
     xor ax, ax
     mov ds, ax
@@ -25,29 +21,29 @@ __pmode_enter__:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-    jmp 0x8:.flush
-.flush:
+    jmp 0x8:.rt
+.rt:
     ret
 
 bits 32
 
-__pmode_leave__:
+__pm_leave:
     mov ax, 0x20
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
     mov ss, ax
-    jmp 0x18:.bridge
+    jmp 0x18:.bg
 
 bits 16
 
-.bridge:
+.bg:
     mov eax, cr0
     and eax, ~1
     mov cr0, eax
-    jmp 0x0:.flush
-.flush:
+    jmp 0x0:.rt
+.rt:
     xor ax, ax
     mov ds, ax
     mov es, ax
@@ -59,13 +55,15 @@ bits 16
 
 bits 32
 
-__pmode_clear_screen__:
+__pm_clear_screen:
     push eax
     push ecx
     push edi
     mov al, 0
     mov ecx, 0
+;    mov cx, [__vbe_mode_brief + 4]
     mov cx, [__vbe_mode_brief + 6]
+;    mov cx, [__vbe_controller_info + 18]
     mov edi, 0xB8000
     rep stosb
     pop edi
@@ -73,8 +71,6 @@ __pmode_clear_screen__:
     pop eax
     ret
 
-align 2
-
-__pmode_cursor:
-__pmode_cursor_x: dw 0
-__pmode_cursor_y: dw 0
+__pm_cursor:
+__pm_cursor_x: dw 0
+__pm_cursor_y: dw 0
