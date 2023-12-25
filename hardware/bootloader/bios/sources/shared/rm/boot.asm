@@ -1,4 +1,4 @@
-%include "include.asm"
+;%include "include.asm"
 
 extern __main
 global __boot_die
@@ -47,7 +47,8 @@ __boot_hlt:
     jmp __boot_hlt
 
 __boot_disk: db 0
-__boot_sectors: dw BOOT_SECTORS
+__boot_sectors: dw 30
+;__boot_sectors: dw BOOT_SECTORS
 
 __boot_print:
     mov ah, 0xE
