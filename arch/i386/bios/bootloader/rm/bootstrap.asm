@@ -1,9 +1,10 @@
-;%include "include.asm"
+%include "generated.asm"
 
 extern __main
 global __boot_die
 global __boot_hlt
 global __boot_disk
+global __boot_platform_arch
 global __boot_sectors
 global __boot_print
 global __boot_crlf
@@ -11,7 +12,7 @@ global __boot_println
 global __boot_dap
 global __boot_dap_process
 
-section .boot
+section .bootstrap
 bits 16
 
 times 90 db 0
@@ -47,8 +48,8 @@ __boot_hlt:
     jmp __boot_hlt
 
 __boot_disk: db 0
-__boot_sectors: dw 30
-;__boot_sectors: dw BOOT_SECTORS
+__boot_platform_arch: db PLATFORM_BUILD_ARCH, 0
+__boot_sectors: dw NUMBER_OF_SECTORS
 
 __boot_print:
     mov ah, 0xE

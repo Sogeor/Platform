@@ -7,7 +7,8 @@ SECTIONS {
 
 	.text : {
 		code = .;
-		*(.boot)
+		*(.bootstrap)
+
 		*(.main)
 		*(.a20)
 		*(.gdt)
@@ -20,6 +21,18 @@ SECTIONS {
 		*(.pmode)
 		*(.vbe)
 		*(.text)
+/*		*(.main)*/
+/*		*(.a20)*/
+/*		*(.gdt)*/
+/*/*		*(.io)*/*/
+/*		*(.ptr)*/
+/*		*(.pm)*/
+/*		*(.jmp)*/
+/*		*(.lifecycle)*/
+/*		*(.rmode)*/
+/*		*(.pmode)*/
+/*		*(.vbe)*/
+/*		*(.text)*/
 	}
 
 	.rodata BLOCK(1) : ALIGN(1) {
