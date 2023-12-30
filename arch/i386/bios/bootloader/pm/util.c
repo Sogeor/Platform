@@ -1,6 +1,6 @@
 #include "util.h"
 
-asm(".code32");
+__asm__(".code32");
 
 __attribute__((section(".util")))
 umax_t __util_strlen(const char *s)

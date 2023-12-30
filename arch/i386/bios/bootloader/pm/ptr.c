@@ -1,6 +1,6 @@
 #include "ptr.h"
 
-asm(".code32");
+__asm__(".code32");
 
 __attribute__((unused, section(".ptr")))
 void __ptr_parse(ptr_t ptr, ptr_table_t *ptr_table)

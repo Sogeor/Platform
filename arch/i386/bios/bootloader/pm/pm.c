@@ -1,12 +1,12 @@
 #include "pm.h"
 
-asm(".code32");
+__asm__(".code32");
 
 __attribute__((unused, noreturn, section(".pm")))
 void __pm_die()
 {
     __pm_leave();
-    asm(".code16gcc");
+    __asm__(".code16gcc");
     __main_die();
 }
 
@@ -14,7 +14,7 @@ __attribute__((unused, noreturn, section(".pm")))
 void __pm_hlt()
 {
     __pm_leave();
-    asm(".code16gcc");
+    __asm__(".code16gcc");
     __main_hlt();
 }
 
@@ -22,10 +22,10 @@ __attribute__((unused, section(".pm")))
 extern void __pm_dap_process(u16_t sectors, u16_t buf_off, u16_t buf_seg, u32_t lba_low)
 {
     __pm_leave();
-    asm(".code16gcc");
+    __asm__(".code16gcc");
     __main_dap_process(sectors, buf_off, buf_seg, lba_low);
     __pm_enter();
-    asm(".code32");
+    __asm__(".code32");
 }
 
 __attribute__((unused, section(".pm")))

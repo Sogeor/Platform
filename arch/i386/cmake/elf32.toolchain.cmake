@@ -1,10 +1,6 @@
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_VERSION 1.0.0-alpha)
-set(CMAKE_SYSTEM_PROCESSOR i686)
+cmake_minimum_required(VERSION 3.22)
 
-set(CMAKE_ASM_COMPILER nasm)
-set(CMAKE_C_COMPILER i686-elf-gcc)
-set(CMAKE_CXX_COMPILER i686-elf-g++)
+set(CMAKE_ASM_FLAGS "")
 
 #list(APPEND CMAKE_FIND_ROOT_PATH "")
 #set(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc /home/alex/mingw-install)

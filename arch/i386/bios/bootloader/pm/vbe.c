@@ -56,7 +56,7 @@ vbe_result_t __vbe_select_mode_info()
 {
     vbe_result_t result;
     vbe_result_table_t result_table;
-    vbe_mode_number_t *ptr = __ptr_compute(&__vbe_controller_info.mode_numbers_ptr);
+    vbe_mode_number_t *ptr = (vbe_mode_number_t*) __ptr_compute(&__vbe_controller_info.mode_numbers_ptr);
     __vbe_mode_brief.number = VBE_CONTROLLER_INFO_MODE_NUMBERS_END;
     for (; *ptr != VBE_CONTROLLER_INFO_MODE_NUMBERS_END; ++ptr)
     {

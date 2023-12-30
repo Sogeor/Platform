@@ -3,14 +3,14 @@
 
 #include "../def.h"
 
-#pragma region UTIL_STR
+// #pragma region UTIL_STR
 
 umax_t __util_strlen(const char *s);
 void __util_strrev(char *s, umax_t base, umax_t end);
 
-#pragma endregion UTIL_STR
+// #pragma endregion UTIL_STR
 
-#pragma region UTIL_TA
+// #pragma region UTIL_TA
 
 extern const char *__util_ta;
 
@@ -38,6 +38,6 @@ void __util_u32ta(u32_t val, char *buf, u8_t radix);
 
 #define UTIL_TA_ADAPTIVE_BUF_SIZE 12
 
-#pragma endregion UTIL_TA
+// #pragma endregion UTIL_TA
 
 #endif // UTIL_H
