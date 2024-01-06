@@ -7,10 +7,7 @@ SECTIONS {
 
 	.text : {
 		code = .;
-/*		*(.bootstrap)*/
 		*(.bootable)
-
-
 		*(.main)
 		*(.a20)
 		*(.gdt)

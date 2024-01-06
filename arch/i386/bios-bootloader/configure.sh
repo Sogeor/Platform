@@ -12,6 +12,7 @@ printf "
         \"arguments\": [
             \"nasm\",
             \"-I ../build/include\",
+            \"-I ../../../../shared/soglib/include\",
             \"-f elf32\",
             \"-o ../build/objects/$(dirname $1)/$(basename $1).o\",
             \"$1\"
@@ -26,6 +27,7 @@ printf "
         \"arguments\": [
             \"i686-elf-gcc\",
             \"-I ../build/include\",
+            \"-I ../../../../shared/soglib/include\",
             \"-std=gnu17\",
             \"-Wall\",
             \"-O0\",
@@ -44,6 +46,7 @@ printf "
         \"arguments\": [
             \"i686-elf-gcc\",
             \"-I ../build/include\",
+            \"-I ../../../../shared/soglib/include\",
             \"-std=gnu++17\",
             \"-Wall\",
             \"-O0\",

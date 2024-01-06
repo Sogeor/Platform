@@ -16,6 +16,7 @@ for path, _, files in walk(root):
         "arguments": [
             "nasm",
             "-I ../build/include",
+            "-I ../../../../shared/soglib/include",
             "-f elf32",
             "-o ../build/objects/{path}/{file[:-4]}.o",
             "{path}/{file}"
@@ -29,6 +30,7 @@ for path, _, files in walk(root):
         "arguments": [
             "i686-elf-gcc",
             "-I ../build/include",
+            "-I ../../../../shared/soglib/include",
             "-std=gnu17",
             "-Wall",
             "-O0",
@@ -46,6 +48,7 @@ for path, _, files in walk(root):
         "arguments": [
             "i686-elf-g++",
             "-I ../build/include",
+            "-I ../../../../shared/soglib/include",
             "-std=gnu++17",
             "-Wall",
             "-O0",

@@ -1,0 +1,10 @@
+std:require(1.0.0)
+
+//std:target("arch"):subtarget("i386"):subtarget("bootloader")
+//                                    :subtarget("bios"):create()
+
+//std:target(platform):subtarget(arch:i386:bootloader:bios):create()
+
+std::target(platform)::subtarget(arch:i386:bootloader:bios)::create()
+std::target(platform)::subtarget(arch:i386:bootloader:bios)::require()
+
