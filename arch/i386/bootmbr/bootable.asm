@@ -14,6 +14,8 @@ global __bootable_dap
 section .bootable
 bits 16
 
+__bootable_stack:
+
 jmp 0x0:__bootable
 
 __bootable:
@@ -125,7 +127,5 @@ __bootable_dap_upper_bits_of_lba_number: dw 0
 __bootable_dap_reserved_1: dw 0
 
 times 510 - ($ - $$) db 0
-
-__bootable_stack:
 
 dw 0xAA55

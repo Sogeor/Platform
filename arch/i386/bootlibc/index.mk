@@ -1,0 +1,1 @@
+__bootlibc__GRP1_OBJS += test
