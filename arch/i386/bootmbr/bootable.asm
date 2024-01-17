@@ -1,6 +1,9 @@
 %include "include.asm"
 
 extern __main
+
+global __bootable_stack
+global __bootable
 global __bootable_die
 global __bootable_hlt
 global __bootable_print
@@ -8,8 +11,17 @@ global __bootable_println
 global __bootable_dap_process
 global __bootable_disk
 global __bootable_number_of_sectors
+global __bootable_die_txt
 global __bootable_crlf
 global __bootable_dap
+global __bootable_dap_size
+global __bootable_dap_reserved_0
+global __bootable_dap_number_of_sectors
+global __bootable_dap_buffer_offset
+global __bootable_dap_buffer_segment
+global __bootable_dap_lower_bits_of_lba_number
+global __bootable_dap_upper_bits_of_lba_number
+global __bootable_dap_reserved_1
 
 section .bootable
 bits 16
