@@ -11,6 +11,7 @@
 ## Brief
 
 * [Introduction](brief/introduction.md)
+* [Components](brief/components.md)
 
 ## Bootloader
 
