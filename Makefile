@@ -11,7 +11,7 @@ endif
 .PHONY: all clean
 
 all:
-	make -C arch/$(VLDLST_ARCH) -f build.mk
+	#make -C arch/$(VLDLST_ARCH) -f build.mk
 	make -C arch/$(VLDLST_ARCH) -f image.mk
 	make -C arch/$(VLDLST_ARCH) -f emulate.mk
 

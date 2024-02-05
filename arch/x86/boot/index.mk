@@ -1,0 +1,10 @@
+OBJECTS += a20.bin
+OBJECTS += bsec.bin
+OBJECTS += gdt.bin
+OBJECTS += main.o
+OBJECTS += mmap.bin
+OBJECTS += mmap.o
+OBJECTS += msec.bin
+OBJECTS += nmi.bin
+OBJECTS += pm.bin
+OBJECTS += print.o
