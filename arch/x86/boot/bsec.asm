@@ -1,5 +1,3 @@
-%include "include.asm"
-
 extern msec_main
 
 global bsec_halt
@@ -10,11 +8,16 @@ section .bsec
 
 bsec_start:
 
+%ifndef BOOT_SIZE
+%define BOOT_SIZE 0
+jmp 0:bsec_die
+%else
 jmp 0:bsec_main
+%endif ; BOOT_SIZE
 
-bsec_stack_undefined_behavior:
+bsec_stack_limit:
 
-times 512 - (bsec_end - bsec_stack_base) - (bsec_stack_undefined_behavior - bsec_start) db 0
+times 512 - (bsec_end - bsec_stack_base) - (bsec_stack_limit - bsec_start) db 0
 
 bsec_stack_base:
 
@@ -23,9 +26,6 @@ bsec_halt:
     jmp bsec_halt
 
 bsec_main:
-    mov bx, [bsec_dap + 2]
-    test bx, bx
-    jz bsec_die
     xor ax, ax
     mov ds, ax
     mov es, ax
@@ -34,6 +34,7 @@ bsec_main:
     mov gs, ax
     mov bp, bsec_stack_base
     mov sp, bp
+    mov bx, BOOT_SIZE ; [bsec_dap + 2]
     mov ecx, 1 ; [bsec_dap + 8]
     mov ah, 0x42
     mov si, bsec_dap
@@ -73,7 +74,7 @@ bsec_die_msg:
 bsec_dap:
 .size: db 16
 .unused_0: db 0
-.sec_num: dw SEC_NUM
+.sec_num: dw BOOT_SIZE
 .buf_off: dw msec_main
 .buf_seg: dw 0
 .low_lba: dd 1

@@ -14,12 +14,11 @@ PTHLST_MKDIR += $(PTH_BUILD_IMG_MBR_RAW)
 #__bootmbr__PTH_BUILD = $(__bootmbr__PTH)/build
 #__bootmbr__PTH_BUILD_BIN = $(__bootmbr__PTH_BUILD)/bin
 __bootmbr__PTH = ../x86/boot
-__bootmbr__PTH_BUILD = $(__bootmbr__PTH)/build
 
 __bootmgr__OFLN = bootx86.bin
 
 #__bootmgr__OPTH = $(__bootmbr__PTH_BUILD_BIN)/bootmbr.img
-__bootmgr__OPTH = $(__bootmbr__PTH_BUILD)/$(__bootmgr__OFLN)
+__bootmgr__OPTH = $(__bootmbr__PTH)/$(__bootmgr__OFLN)
 
 # __bootmbr__
 
@@ -40,5 +39,5 @@ mkdir:
 .PHONY: mgr-raw
 
 mgr-raw: mkdir
-	#mkisofs -V "BOOTLOADER" -o $(MBR_RAW_OPTH) -b $(__bootmgr__OFLN) -no-emul-boot "$(__bootmbr__PTH_BUILD)"
+	#mkisofs -V "BOOTLOADER" -o $(MBR_RAW_OPTH) -b $(__bootmgr__OFLN) -no-emul-boot "$(__bootmbr__PTH)"
 	dd if=$(__bootmgr__OPTH) of=$(MBR_RAW_OPTH) conv=notrunc

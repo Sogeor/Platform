@@ -1,0 +1,1 @@
+AUTO_OBJECTS += $(ARCH_X86_KERNEL)/start.bin

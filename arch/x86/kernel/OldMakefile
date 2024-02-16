@@ -4,7 +4,7 @@ SHARED_DIR = $(ROOT_DIR)/shared
 
 X86_DIR = $(ARCH_DIR)/x86
 
-IMG := bootx86.bin
+IMG := kernel-x86.bin
 
 AS := nasm
 CC := i686-elf-gcc
@@ -27,9 +27,9 @@ OBJECTS :=
 include index.mk
 include ../cpu/index.mk
 
-.PHONY: all clean build rebuild
+.PHONY: all clean build
 
-all: clean rebuild
+all: clean build
 
 clean:
 	@for object in $(OBJECTS) ; do \
@@ -37,10 +37,6 @@ clean:
 	done
 
 build: $(OBJECTS)
-	@$(LD) $(LDFLAGS) -o $(IMG) $(OBJECTS)
-
-rebuild: build
-	@$(AS) $(ASFLAGS) -d BOOT_SIZE=$(shell expr $(shell expr $(shell expr $(shell wc -c < $(IMG)) + 511) / 512) - 1) -o bsec.bin bsec.asm
 	@$(LD) $(LDFLAGS) -o $(IMG) $(OBJECTS)
 
 %.bin: %.asm

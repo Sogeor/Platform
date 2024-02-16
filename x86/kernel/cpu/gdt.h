@@ -1,7 +1,9 @@
-#ifndef BOOTMBR_GDT_H
-#define BOOTMBR_GDT_H
+#ifndef PLATFORM_X86_KERNEL_GDT_H
+#define PLATFORM_X86_KERNEL_GDT_H
 
-#include <stdint.h>
+struct gdt {
+
+};
 
 struct gdt_desc
 {
@@ -30,13 +32,6 @@ struct gdt_entry
     uint64_t base_1: 8;
 } __attribute((packed));
 
-void gdt_set_entry(uint16_t selector, struct gdt_entry *gdt_entry);
-struct gdt_entry *gdt_get_entry(uint16_t selector);
+void KnGdtInit();
 
-void gdt_set_entry_limit(uint32_t limit, struct gdt_entry *gdt_entry);
-uint32_t gdt_get_entry_limit(struct gdt_entry *gdt_entry);
-
-void gdt_set_entry_base(uint32_t base, struct gdt_entry *gdt_entry);
-uint32_t gdt_get_entry_base(struct gdt_entry *gdt_entry);
-
-#endif //BOOTMBR_GDT_H
+#endif // PLATFORM_X86_KERNEL_GDT_H
