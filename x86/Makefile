@@ -37,7 +37,7 @@ clean:
 
 build:
 	@$(MAKE) -C $(X86_BOOT)
-#	@$(MAKE) -C $(X86_KERNEL)
+	@$(MAKE) -C $(X86_KERNEL)
 
 image: build
 	@$(IMGT) -o $(IMAGE) $(IFLAGS)

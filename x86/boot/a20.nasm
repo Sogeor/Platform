@@ -1,8 +1,7 @@
 section .a20
 
 bits 16
-extern header_die
-extern gdt_main
+extern boot_die
 global a20_main
 a20_main:
     call a20_check
@@ -18,9 +17,9 @@ a20_main:
     jne .free
     call a20_port_enable
     call a20_check
-    je header_die
+    mov si, A20_MAIN_MSG_FAILED_TO_ENABLE_A20_LINE
+    je boot_die
 .free:
-    call gdt_main
     ret
 
 a20_check:
@@ -63,7 +62,7 @@ a20_kbc_enable:
     ret
 
 a20_kbc_wait:
-    ; todo: delay
+    ; todo: delay, but why?
     in al, 0x64
     test al, 2
     jnz a20_kbc_wait
@@ -82,3 +81,7 @@ a20_gate_enable:
 a20_port_enable:
     in al, 0xEE
     ret
+
+A20_MAIN_MSG_FAILED_TO_ENABLE_A20_LINE:
+    dw 38
+    db "Failed to enable A20 line (0x00000002)"

@@ -8,11 +8,6 @@ SECTIONS {
 	.text : {
 		code = .;
 		*(.header)
-		*(.boot)
-		*(.a20)
-		*(.nmi)
-		*(.gdt)
-		*(.pm)
 		*(.text)
 	}
 

@@ -12,7 +12,8 @@ AS := nasm
 CC := i686-elf-gcc
 LD := i686-elf-ld
 
-ASFLAGS := -f elf32
+ASFLAGS := -f elf32 \
+           -D X86
 
 CFLAGS := -std=gnu17 \
           -std=gnu++17 \
@@ -21,7 +22,8 @@ CFLAGS := -std=gnu17 \
           -ffreestanding \
           -c \
           -I $(X86_INCLUDE) \
-          -I $(SHARED_INCLUDE)
+          -I $(SHARED_INCLUDE) \
+          -D X86
 
 LDFLAGS := -T link.ld \
            -nostdlib
@@ -35,6 +37,7 @@ MANUAL_TARGETS :=
 OBJECTS = $(AUTO_OBJECTS) $(MANUAL_OBJECTS)
 TARGETS = $(AUTO_TARGETS) $(MANUAL_TARGETS)
 
+include config.mk
 include index.mk
 
 REBUILD_DEFINE_NAME := BOOT_SIZE

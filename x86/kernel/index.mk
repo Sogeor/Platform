@@ -1,1 +1,1 @@
-AUTO_OBJECTS += $(ARCH_X86_KERNEL)/start.bin
+AUTO_OBJECTS += $(X86_KERNEL)/header.bin

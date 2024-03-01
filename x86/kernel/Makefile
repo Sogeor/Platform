@@ -12,7 +12,10 @@ AS := nasm
 CC := x86_64-elf-gcc
 LD := x86_64-elf-ld
 
-ASFLAGS := -f elf64
+ASFLAGS := -f elf64 \
+           -d X86 \
+           -d KERNEL \
+           -d BITS64
 
 CFLAGS := -std=gnu17 \
           -std=gnu++17 \

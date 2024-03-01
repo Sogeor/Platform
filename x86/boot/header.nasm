@@ -10,9 +10,9 @@ jmp 0:header_die
 jmp 0:header_main
 %endif ; BOOT_SIZE
 
-header_stack_limit:
+header_stack_end:
 
-times 512 - (header_end - header_stack_base) - (header_stack_limit - header_start) db 0
+times 512 - (header_end - header_stack_base) - (header_stack_end - header_start) db 0
 
 header_stack_base:
 
@@ -25,16 +25,16 @@ global header_die
 header_die:
     mov ah, 0xE
     mov bx, 0xC
-    mov cx, 14
+    mov cx, 27
     mov si, .msg
 .loop:
     lodsb
     int 10h
     loop .loop
     jmp header_hlt
-.msg: db "Failed to boot" ; 14
+.msg: db "Failed to boot (0x00000001)" ; 27
 
-extern a20_main
+extern boot_main
 header_main:
     mov [disk], dl
     xor ax, ax
@@ -64,7 +64,7 @@ header_main:
     int 13h
     jc header_die
 .jump:
-    call a20_main
+    call boot_main
     jmp header_die
 
 global disk
@@ -74,9 +74,9 @@ header_dap:
 header_dap_size: db 16
 header_dap_unused_0: db 0
 header_dap_sectors: dw BOOT_SIZE
-header_dap_offset: dw a20_main
+header_dap_offset: dw boot_main
 header_dap_segment: dw 0
-header_dap_low_lba: dd 1 ; exclude header
+header_dap_low_lba: dd 1 ; exclude header sector
 header_dap_up_lba: dw 0
 header_dap_unused_1: dw 0
 
