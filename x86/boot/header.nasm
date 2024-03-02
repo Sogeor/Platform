@@ -64,17 +64,18 @@ header_main:
     int 13h
     jc header_die
 .jump:
-    call boot_main
+    jmp boot_main
     jmp header_die
 
 global disk
 disk: db 0
 
+extern stack_end
 header_dap:
 header_dap_size: db 16
 header_dap_unused_0: db 0
 header_dap_sectors: dw BOOT_SIZE
-header_dap_offset: dw boot_main
+header_dap_offset: dw stack_end
 header_dap_segment: dw 0
 header_dap_low_lba: dd 1 ; exclude header sector
 header_dap_up_lba: dw 0

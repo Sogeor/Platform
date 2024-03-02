@@ -1,19 +1,24 @@
 section .boot
 
 bits 16
+extern stack_base
 extern a20_main
 extern pm_main
+extern main
 global boot_main
 boot_main:
-    call a20_main
+    mov bp, stack_base  ; setup new stack
+    mov sp, bp
+    call a20_main ; enable a20 line
     ; todo: check features of computer
     ; todo: use apm or acpi
     ; todo: create memory map
     ; todo: move gdt loading here
     ; todo: move interrupt disabling here
     call pm_main
-    mov si, BOOT_MAIN_MSG_FAILED_TO_ENTER_PM
-    jmp boot_die
+;    mov si, BOOT_MAIN_MSG_FAILED_TO_ENTER_PM
+;    jmp boot_die
+    jmp main
 
 ; si --> address of message (1)
 ;
