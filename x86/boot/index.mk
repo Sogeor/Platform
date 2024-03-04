@@ -1,5 +1,5 @@
 AUTO_OBJECTS += $(X86_BOOT)/header.bin
-AUTO_OBJECTS += $(X86_BOOT)/stack.bin
+#AUTO_OBJECTS += $(X86_BOOT)/stack.bin
 
 AUTO_OBJECTS += $(X86_BOOT)/boot.bin
 AUTO_OBJECTS += $(X86_BOOT)/a20.bin

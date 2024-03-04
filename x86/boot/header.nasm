@@ -1,7 +1,6 @@
 section .header
 
 bits 16
-header_start:
 
 %ifndef BOOT_SIZE
 %define BOOT_SIZE 0
@@ -9,12 +8,6 @@ jmp 0:header_die
 %else
 jmp 0:header_main
 %endif ; BOOT_SIZE
-
-header_stack_end:
-
-times 512 - (header_end - header_stack_base) - (header_stack_end - header_start) db 0
-
-header_stack_base:
 
 global header_hlt
 header_hlt:
@@ -34,6 +27,7 @@ header_die:
     jmp header_hlt
 .msg: db "Failed to boot (0x00000001)" ; 27
 
+extern stack_end
 extern boot_main
 header_main:
     mov [disk], dl
@@ -43,7 +37,7 @@ header_main:
     mov ss, ax
     mov fs, ax
     mov gs, ax
-    mov bp, header_stack_base
+    mov bp, stack_end
     mov sp, bp
     mov ah, 0x42
     mov bx, BOOT_SIZE ; header_dap_sectors
@@ -70,17 +64,16 @@ header_main:
 global disk
 disk: db 0
 
-extern stack_end
+extern high_start
 header_dap:
 header_dap_size: db 16
 header_dap_unused_0: db 0
 header_dap_sectors: dw BOOT_SIZE
-header_dap_offset: dw stack_end
+header_dap_offset: dw high_start
 header_dap_segment: dw 0
 header_dap_low_lba: dd 1 ; exclude header sector
 header_dap_up_lba: dw 0
 header_dap_unused_1: dw 0
 
+times 510 - ($ - $$) db 0
 dw 0xAA55
-
-header_end:

@@ -12,3 +12,17 @@ Sogeor Platform Boot (x86)
 состояние ЭВМ, создают карту памяти, настраивают GDT, отключают прерывания,
 переходят в защищённый режим, загружают ядро платформы (далее — ядро) в память
 и передают ему управление.
+
+
+0000:0000 <-- Native Interrupt Descriptor Table Start
+....:....
+0000:03FF <-- Native Interrupt Descriptor Table End
+0000:0400 <-- Usable Memory Start
+....:....
+0000:7BFF <-- Usable Memory End
+0000:7C00 <-- Bootable Sector Start
+....:....
+0000:7E00 <-- Bootable Sector End
+0000:7E01 <-- Usable Memory Start
+....:....
+0000:7E01 <-- Usable Memory Start

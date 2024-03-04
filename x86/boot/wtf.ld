@@ -1,8 +1,8 @@
 OUTPUT_FORMAT("binary")
 
+STACK_SIZE = 4096;
 stack_start = 0x400;
-stack_size = 4096;
-stack_end = stack_size + stack_start;
+stack_end = stack_start + STACK_SIZE;
 heap_start = stack_end + 1;
 heap_end = 0x7BFF;
 
@@ -10,12 +10,12 @@ SECTIONS {
 	. = 0x7C00;
 
 	.text : {
-	    code = .;
 	    header_start = .;
 		*(.header)
 	    header_end = .;
 
-	    high_start = .;
+	    high_start = header_end + 1;
+		code = high_start;
 		*(.text)
 	}
 
@@ -37,8 +37,8 @@ SECTIONS {
 		PROVIDE(_bss_end = .);
 	}
 
+	. = 0x9FFFF;
 	high_end = .;
-	bootloader_end = .;
 
 	/DISCARD/ : {
 		*(.comment)
