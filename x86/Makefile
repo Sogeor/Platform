@@ -8,7 +8,7 @@ SHARED_INCLUDE := $(SHARED)/include
 
 IMAGE := $(X86)/x86.img
 
-BOOT_IMAGE := $(X86_BOOT)/boot-x86.img
+BOOT_IMAGE := $(X86_BOOT)/boot.img
 KERNEL_IMAGE := $(X86_KERNEL)/kernel-x86.img
 
 IMGT := mkisofs
@@ -16,7 +16,7 @@ CPYT := dd
 EMUL := qemu-system-x86_64
 
 IFLAGS := -V "BOOTLOADER" \
-          -b "boot-x86.img" \
+          -b "boot.img" \
           -no-emul-boot \
           "$(X86_BOOT)"
 

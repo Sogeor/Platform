@@ -1,12 +1,12 @@
-AUTO_OBJECTS += $(X86_BOOT)/header.bin
-#AUTO_OBJECTS += $(X86_BOOT)/stack.bin
+AUTO_OBJECTS += $(PROJECT_PATH)/header.bin
+#AUTO_OBJECTS += $(PROJECT_PATH)/stack.bin
 
-AUTO_OBJECTS += $(X86_BOOT)/boot.bin
-AUTO_OBJECTS += $(X86_BOOT)/a20.bin
-AUTO_OBJECTS += $(X86_BOOT)/nmi.bin
-AUTO_OBJECTS += $(X86_BOOT)/gdt.bin
-AUTO_OBJECTS += $(X86_BOOT)/pm.bin
-AUTO_OBJECTS += $(X86_BOOT)/interrupt.bin
+AUTO_OBJECTS += $(PROJECT_PATH)/boot.bin
+AUTO_OBJECTS += $(PROJECT_PATH)/a20.bin
+AUTO_OBJECTS += $(PROJECT_PATH)/nmi.bin
+AUTO_OBJECTS += $(PROJECT_PATH)/gdt.bin
+AUTO_OBJECTS += $(PROJECT_PATH)/pm.bin
+AUTO_OBJECTS += $(PROJECT_PATH)/interrupt.bin
 
-AUTO_OBJECTS += $(X86_BOOT)/interrupt.o
-AUTO_OBJECTS += $(X86_BOOT)/main.o
+AUTO_OBJECTS += $(PROJECT_PATH)/interrupt.o
+AUTO_OBJECTS += $(PROJECT_PATH)/main.o
