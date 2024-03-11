@@ -1,33 +1,4 @@
-PLATFORM := ../..
-X86 := $(PLATFORM)/x86
-X86_BOOT := $(X86)/boot
-X86_INCLUDE := $(X86)/include
-X86_KERNEL := $(X86)/kernel
-SHARED := $(PLATFORM)/shared
-SHARED_INCLUDE := $(SHARED)/include
-
-IMAGE := $(X86_KERNEL)/kernel-x86.img
-
-AS := nasm
-CC := x86_64-elf-gcc
-LD := x86_64-elf-ld
-
-ASFLAGS := -f elf64 \
-           -d X86 \
-           -d KERNEL \
-           -d BITS64
-
-CFLAGS := -std=gnu17 \
-          -std=gnu++17 \
-          -Wall \
-          -O0 \
-          -ffreestanding \
-          -c \
-          -I $(X86_INCLUDE) \
-          -I $(SHARED_INCLUDE)
-
-LDFLAGS := -T link.ld \
-           -nostdlib
+include project.mk
 
 AUTO_OBJECTS :=
 AUTO_TARGETS = $(AUTO_OBJECTS)
@@ -45,18 +16,16 @@ include index.mk
 all: clean build
 
 clean:
+	@rm -f $(PROJECT_IMAGE_PATH)
 	@for object in $(OBJECTS) ; do \
 	    rm -f "$${object}" ; \
 	done
 
 build: $(TARGETS)
-	@$(LD) $(LDFLAGS) -o $(IMAGE) $(OBJECTS)
+	@$(LD) $(LDFLAGS) -o $(PROJECT_IMAGE_PATH) $(OBJECTS)
 
 %.bin: %.nasm
 	@$(AS) $(ASFLAGS) -o $@ $^
 
 %.o: %.c
-	@$(CC) $(CFLAGS) -o $@ $^
-
-%.obj: %.cpp
 	@$(CC) $(CFLAGS) -o $@ $^
