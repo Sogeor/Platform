@@ -1,13 +1,21 @@
 OUTPUT_FORMAT("binary")
 
-STACK_BASE = 0x7DFF;
+stack_start = 0x400;
+stack_size = 4096;
+stack_end = stack_size + stack_start;
+heap_start = stack_end + 1;
+heap_end = 0x7BFF;
 
 SECTIONS {
-	. = 0x7E00;
+	. = 0x7C00;
 
 	.text : {
 	    code = .;
-		*(.start)
+	    header_start = .;
+		*(.header)
+	    header_end = .;
+
+	    high_start = .;
 		*(.text)
 	}
 
@@ -28,6 +36,9 @@ SECTIONS {
 		*(.stack)
 		PROVIDE(_bss_end = .);
 	}
+
+	high_end = .;
+	bootloader_end = .;
 
 	/DISCARD/ : {
 		*(.comment)

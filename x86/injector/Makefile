@@ -1,9 +1,9 @@
 include platform.mk
 
-IMAGE := boot.img
+PLATFORM_X86_BOOT_IMAGE := $(PLATFORM_X86_BOOT)/boot.img
+IMAGE := injector.img
 
 include toolkit.mk
-CFLAGS += -Wall -c -O0
 LDFLAGS += -T link.ld
 
 OBJECTS :=
@@ -23,7 +23,6 @@ build: $(OBJECTS)
 	@$(LD) $(LDFLAGS) -o $(IMAGE) $(OBJECTS)
 
 %.bin: %.nasm
-	@$(AS) $(ASFLAGS) -o $@ $^
-
-%.o: %.c
-	@$(CC) $(CFLAGS) -o $@ $^
+	@$(AS) $(ASFLAGS) \
+    -d BOOT_SIZE=$(shell expr $(shell expr $(shell wc -c < $(PLATFORM_X86_BOOT_IMAGE)) + 511) / 512) \
+    -o $@ $^

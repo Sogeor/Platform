@@ -1,0 +1,2 @@
+# x86
+TARGET_MACHINE_ARCH := x86

@@ -1,9 +1,6 @@
-#ifndef PLATFORM_BOOT_BOOT_H
-#define PLATFORM_BOOT_BOOT_H
+#ifndef PLATFORM_BOOT_H
+#define PLATFORM_BOOT_H
 
-#include <stdint.h>
+int main();
 
-__attribute__((noreturn))
-void main();
-
-#endif // PLATFORM_BOOT_BOOT_H
+#endif // PLATFORM_BOOT_H
