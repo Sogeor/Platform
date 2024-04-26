@@ -13,29 +13,15 @@ l0:
     mov ss, ax
     mov fs, ax
     mov gs, ax
-    ; 0x04FF <- overflow
-    ; 0x0500 <- limit
-    ; 0x24FF <- base
     mov bp, 0x24FF
     mov sp, bp
-    mov bx, [dap_number]
-    mov si, dap
-.lp:
     mov ah, 0x42
+    mov si, dap
     int 13h
-    jc die
+    jc .die
     test ah, ah
-    jne die
-    cmp bx, 127
-    jbe .dn
-    sub bx, 127
-    add word [dap_segment], 127 * 512 / 16
-    add word [dap_lba_low], 127 ; TODO: full add (add to all lba parts)
-    jmp .lp
-.dn:
-    jmp 0x2500
-
-die:
+    je 0x2500
+.die:
     mov ah, 0xE
     mov bx, 0
     mov cx, 14
