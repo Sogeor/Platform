@@ -12,7 +12,7 @@ global die
 die:
     mov ah, 0xE
     mov bx, 0
-    mov cx, 16
+    mov cx, 14
     mov si, msg
 .lp:
     lodsb
@@ -24,9 +24,7 @@ halt:
     hlt
     jmp halt
 
-msg: db "Failed to boot 2"
+msg: db "Failed to boot"
 
 global disk
 disk: db 0
-
-times 512 * 42 db 0
