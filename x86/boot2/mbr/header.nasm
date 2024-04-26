@@ -1,6 +1,10 @@
 org 0x7C00
 bits 16
 
+%if BOOT_SIZE > 43
+%error "not enough space in low memory under header sector"
+%endif
+
 jmp 0:l0
 l0:
     xor ax, ax
@@ -14,26 +18,20 @@ l0:
     ; 0x24FF <- base
     mov bp, 0x24FF
     mov sp, bp
+    mov bx, [dap_number]
     mov si, dap
 .lp:
     mov ah, 0x42
     int 13h
     jc die
     test ah, ah
-    jnz die
-    test bx, bx
-    jz .dn
+    jne die
     cmp bx, 127
-    jb .ex
-    sub bp, [dap_number]
-.ct:
-    mov ax, 512 * 16
-    mul word [dap_number]
-    add [dap_segment], ax
-    add dword [dap_lba_low], 1 ; TODO: full add (add to all lba parts)
-.ex:
-    mov [dap_number], bx
-    jmp .ct
+    jbe .dn
+    sub bx, 127
+    add word [dap_segment], 127 * 512 / 16
+    add word [dap_lba_low], 127 ; TODO: full add (add to all lba parts)
+    jmp .lp
 .dn:
     jmp 0x2500
 

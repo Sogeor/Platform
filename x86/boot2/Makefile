@@ -17,4 +17,5 @@ build-gpt:
 
 .PHONY:
 emulate-mbr: # TODO: REMOVE IT! ...
-	@qemu-system-x86_64 -no-reboot -no-shutdown -net none -drive format=raw,file=mbr/boot.img
+	@#qemu-system-x86_64 -no-reboot -no-shutdown -net none -drive format=raw,file=mbr/boot.img
+	@qemu-system-x86_64 -no-shutdown -net none -drive format=raw,file=mbr/boot.img
