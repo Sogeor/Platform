@@ -24,7 +24,7 @@ l0:
 .die:
     mov ah, 0xE
     mov bx, 0
-    mov cx, 14
+    mov cx, 29
     mov si, .m
 .lp:
     lodsb
@@ -33,7 +33,7 @@ l0:
 .h:
     hlt
     jmp .h
-.m: db "Failed to boot"
+.m: db "Failed to read rstage sectors"
 
 dap:
 dap_size: db 16
