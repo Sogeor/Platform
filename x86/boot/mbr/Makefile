@@ -1,47 +1,37 @@
-GPT := ../gpt
-MBR := .
-SHR := ../shared
+WARNINGS_LEVEL =
+_DV_WARNINGS_LEVEL := all
+_AV_WARNINGS_LEVEL := $(_DV_WARNINGS_LEVEL);none
+ifndef WARNINGS_LEVEL
+$(warning WARNINGS_LEVEL not defined. Used by default: $(_DV_WARNINGS_LEVEL).)
+override WARNINGS_LEVEL := $(_DV_WARNINGS_LEVEL)
+endif
+ifeq ($(findstring $(WARNINGS_LEVEL), $(_AV_WARNINGS_LEVEL)),)
+$(error WARNINGS_LEVEL is incorrectly set to $(WARNINGS_LEVEL). Use: $(_AV_WARNINGS_LEVEL))
+endif
 
-IMG := boot.img
-INC :=
-SRC :=
-OBJ = $(patsubst %.c, %.o, $(patsubst %.nasm, %.bin, $(SRC)))
+MBR_IMAGE := mbr.img
 
-TLP_NASM := nasm
-TLP_C := i686-elf-gcc
-TLP_LD := i686-elf-ld
+INJECTOR_IMAGE := injector/injector.img
 
-FLG_NASM = -f elf32 $(addprefix "-I ", $(INC))
-FLG_C = -std=gnu17 -ffreestanding -Wall -c -O0 \
-        -D BALLOC \
-        $(addprefix "-I ", $(INC))
-FLG_LD := -nostdlib -T link.ld
+MANAGER_IMAGE := manager/manager.img
 
-include index.mk
-include $(SHR)/Makefile
-
-.PHONY: all clean build-step-1 build-step-2 build
+.PHONY: all clean build
 all: clean build
 clean:
-	@rm -f $(IMG)
-	@for obj in $(OBJ) ; do \
-	    rm -f "$${obj}" ; \
-	done
-	@rm -f header.bin
-build-step-1: $(OBJ)
-	@echo "[ld] $^ >> $(IMG)"
-	@$(TLP_LD) $(FLG_LD) -o $(IMG) $^
-	@echo "[nasm] header.nasm >> header.bin"
-build-step-2: build-step-1
-	@echo "[img] $(shell expr $(shell expr $(shell expr $(shell wc -c < $(IMG)) + 511) / 512) - 1) >> BOOT_SIZE"
-	@$(TLP_NASM) -d BOOT_SIZE=$(shell expr $(shell expr $(shell expr $(shell wc -c < $(IMG)) + 511) / 512) - 1) -f bin -o header.bin header.nasm
-	@echo "[img] header.bin >> $(IMG)"
-	@dd if=header.bin of=$(IMG) conv=notrunc status=none
-build: build-step-2
+ifneq ($(wildcard $(MBR_IMAGE)),)
+	@echo "Deleting $(MBR_IMAGE)..."
+	@rm -f $(MBR_IMAGE)
+endif
+	@$(MAKE) -C injector clean MANAGER_SIZE=0
+	@$(MAKE) -C manager clean
+build: build-image
 
-%.bin: %.nasm
-	@echo "[nasm] $^ >> $@"
-	@$(TLP_NASM) $(FLG_NASM) -o $@ $^
-%.o: %.c
-	@echo "[c] $^ >> $@"
-	@$(TLP_C) $(FLG_C) -o $@ $^
+.PHONY: build-injector build-manager build-image
+build-injector: build-manager
+	@echo "Setting MANAGER_SIZE to $(shell expr $(shell expr $(shell wc -c < $(MANAGER_IMAGE)) + 511) / 512)..."
+	@$(MAKE) -C injector build MANAGER_SIZE=$(shell expr $(shell expr $(shell wc -c < $(MANAGER_IMAGE)) + 511) / 512)
+build-manager:
+	@$(MAKE) -C manager build
+build-image: build-injector
+	@echo "Compiling $(MBR_IMAGE)..."
+	@cat $(INJECTOR_IMAGE) $(MANAGER_IMAGE) > $(MBR_IMAGE)

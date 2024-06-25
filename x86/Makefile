@@ -1,52 +1,50 @@
-PLATFORM := ..
-X86 := $(PLATFORM)/x86
-X86_BOOT := $(X86)/boot
-X86_INCLUDE := $(X86)/include
-X86_INJECTOR := $(X86)/injector
-X86_KERNEL := $(X86)/kernel
-SHARED := $(PLATFORM)/shared
-SHARED_INCLUDE := $(SHARED)/include
+X86_IMAGE_FORMAT =
+_DV_X86_IMAGE_FORMAT := iso9660
+_AV_X86_IMAGE_FORMAT := $(_DV_X86_IMAGE_FORMAT) # TODO: `udf` is planned
+ifndef X86_IMAGE_FORMAT
+$(warning X86_IMAGE_FORMAT not defined. Used by default: $(_DV_X86_IMAGE_FORMAT).)
+override X86_IMAGE_FORMAT := $(_DV_X86_IMAGE_FORMAT)
+endif
+ifeq ($(findstring $(X86_IMAGE_FORMAT), $(_AV_X86_IMAGE_FORMAT)),)
+$(error X86_IMAGE_FORMAT incorrectly defined. Use: $(_AV_X86_IMAGE_FORMAT))
+endif
 
-IMAGE := $(X86)/x86.img
+X86_PARTITION_TABLE =
+_DV_X86_PARTITION_TABLE := mbr
+_AV_X86_PARTITION_TABLE := $(_DV_X86_PARTITION_TABLE) # TODO: `gpt` is planned
+ifndef X86_PARTITION_TABLE
+$(warning X86_PARTITION_TABLE not defined. Used by default: $(_DV_X86_PARTITION_TABLE).)
+override X86_PARTITION_TABLE := $(_DV_X86_PARTITION_TABLE)
+endif
+ifeq ($(findstring $(X86_PARTITION_TABLE), $(_AV_X86_PARTITION_TABLE)),)
+$(error X86_PARTITION_TABLE is incorrectly set to $(X86_PARTITION_TABLE). Use: $(_AV_X86_PARTITION_TABLE))
+endif
 
-BOOT_IMAGE := $(X86_BOOT)/boot.img
-KERNEL_IMAGE := $(X86_KERNEL)/kernel-x86.img
-INJECTOR_IMAGE := $(X86_INJECTOR)/injector.img
+WARNINGS_LEVEL =
+_DV_WARNINGS_LEVEL := all
+_AV_WARNINGS_LEVEL := $(_DV_WARNINGS_LEVEL);none
+ifndef WARNINGS_LEVEL
+$(warning WARNINGS_LEVEL not defined. Used by default: $(_DV_WARNINGS_LEVEL).)
+override WARNINGS_LEVEL := $(_DV_WARNINGS_LEVEL)
+endif
+ifeq ($(findstring $(WARNINGS_LEVEL), $(_AV_WARNINGS_LEVEL)),)
+$(error WARNINGS_LEVEL is incorrectly set to $(WARNINGS_LEVEL). Use: $(_AV_WARNINGS_LEVEL))
+endif
 
-IMGT := mkisofs
-CPYT := dd
-EMUL := qemu-system-x86_64
+X86_IMAGE := x86.img
 
-IFLAGS := -V "Sogeor Platform" \
-          -b "injector.img" \
-          -no-emul-boot \
-          "$(INJECTOR_IMAGE)"
+X86_BOOT_IMAGE =
 
-CFLAGS := conv=notrunc
-
-EFLAGS := -no-reboot \
-          -no-shutdown \
-          -net none
-
-.PHONY: all clean build image emulate
-
-all: clean emulate
-
+.PHONY: all clean build
+all: clean build
 clean:
-	@rm -f $(IMAGE)
-	@$(MAKE) -C $(X86_BOOT) clean
-	@$(MAKE) -C $(X86_KERNEL) clean
-	@$(MAKE) -C $(X86_INJECTOR) clean
+ifneq ($(wildcard $(X86_IMAGE)),)
+	@echo "Deleting $(X86_IMAGE)..."
+	@rm -f $(X86_IMAGE)
+endif
+	@$(MAKE) -C boot clean BOOT_METHOD=$(X86_PARTITION_TABLE) WARNINGS_LEVEL=$(WARNINGS_LEVEL)
+build: build-boot
 
-build:
-	@$(MAKE) -C $(X86_BOOT)
-	@$(MAKE) -C $(X86_KERNEL)
-	@$(MAKE) -C $(X86_INJECTOR)
-
-image: build
-	@#$(IMGT) -o $(IMAGE) $(IFLAGS)
-	@$(CPYT) if=$(INJECTOR_IMAGE) of=$(IMAGE) $(CFLAGS)
-	@$(CPYT) seek=1 if=$(BOOT_IMAGE) of=$(IMAGE) $(CFLAGS)
-
-emulate: image
-	@$(EMUL) $(EFLAGS) -drive format=raw,file=$(IMAGE)
+.PHONY: build-boot
+build-boot:
+	@$(MAKE) -C boot build BOOT_METHOD=$(X86_PARTITION_TABLE) WARNINGS_LEVEL=$(WARNINGS_LEVEL)
