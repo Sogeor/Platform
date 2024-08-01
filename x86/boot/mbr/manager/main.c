@@ -1,6 +1,6 @@
 #include "main.h"
 
-__asm(".code16gcc");
+u8 disk;
 
 void main(void)
 {

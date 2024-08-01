@@ -1,6 +1,7 @@
 section .start
 bits 16
 
+extern disk
 extern stack
 extern main
 start:
@@ -12,19 +13,20 @@ start:
 
     call main
 
-die:
     mov ah, 0xE
     mov bx, 0
-    mov cx, 14
-    mov si, .msg
+    mov cx, 21
+    mov si, msg
 .loop:
     lodsb
     int 10h
     loop .loop
-.halt:
-    hlt
-    jmp .halt
-.msg: db "Failed to boot"
 
-global disk
-disk: db 0 ; TODO: move it to c files?
+global halt
+halt:
+    cli
+.loop:
+    hlt
+    jmp .loop
+
+msg: db "Initialization failed"

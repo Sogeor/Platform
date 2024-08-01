@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 // signed integer types
+
 typedef int8_t i8;
 typedef int16_t i16;
 typedef struct i24_s
@@ -70,32 +71,33 @@ typedef struct i128_s
     i64 addition;
 } __attribute__((packed)) i128;
 
-inline i24 i24a(i16 base, i8 addition);
-inline i24 i24b(i16 base);
-inline i40 i40a(i32 base, i8 addition);
-inline i40 i40b(i32 base);
-inline i48 i48a(i32 base, i16 addition);
-inline i48 i48b(i32 base);
-inline i56 i56a(i32 base, i24 addition);
-inline i56 i56b(i32 base);
-inline i72 i72a(i64 base, i8 addition);
-inline i72 i72b(i64 base);
-inline i80 i80a(i64 base, i16 addition);
-inline i80 i80b(i64 base);
-inline i88 i88a(i64 base, i24 addition);
-inline i88 i88b(i64 base);
-inline i96 i96a(i64 base, i32 addition);
-inline i96 i96b(i64 base);
-inline i104 i104a(i64 base, i40 addition);
-inline i104 i104b(i64 base);
-inline i112 i112a(i64 base, i48 addition);
-inline i112 i112b(i64 base);
-inline i120 i120a(i64 base, i56 addition);
-inline i120 i120b(i64 base);
-inline i128 i128a(i64 base, i64 addition);
-inline i128 i128b(i64 base);
+i24 i24a(i16 base, i8 addition);
+i24 i24b(i16 base);
+i40 i40a(i32 base, i8 addition);
+i40 i40b(i32 base);
+i48 i48a(i32 base, i16 addition);
+i48 i48b(i32 base);
+i56 i56a(i32 base, i24 addition);
+i56 i56b(i32 base);
+i72 i72a(i64 base, i8 addition);
+i72 i72b(i64 base);
+i80 i80a(i64 base, i16 addition);
+i80 i80b(i64 base);
+i88 i88a(i64 base, i24 addition);
+i88 i88b(i64 base);
+i96 i96a(i64 base, i32 addition);
+i96 i96b(i64 base);
+i104 i104a(i64 base, i40 addition);
+i104 i104b(i64 base);
+i112 i112a(i64 base, i48 addition);
+i112 i112b(i64 base);
+i120 i120a(i64 base, i56 addition);
+i120 i120b(i64 base);
+i128 i128a(i64 base, i64 addition);
+i128 i128b(i64 base);
 
 // unsigned integer types
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef struct u24_s
@@ -161,52 +163,54 @@ typedef struct u128_s
     u64 addition;
 } __attribute__((packed)) u128;
 
-inline u24 u24a(u16 base, u8 addition);
-inline u24 u24b(u16 base);
-inline u40 u40a(u32 base, u8 addition);
-inline u40 u40b(u32 base);
-inline u48 u48a(u32 base, u16 addition);
-inline u48 u48b(u32 base);
-inline u56 u56a(u32 base, u24 addition);
-inline u56 u56b(u32 base);
-inline u72 u72a(u64 base, u8 addition);
-inline u72 u72b(u64 base);
-inline u80 u80a(u64 base, u16 addition);
-inline u80 u80b(u64 base);
-inline u88 u88a(u64 base, u24 addition);
-inline u88 u88b(u64 base);
-inline u96 u96a(u64 base, u32 addition);
-inline u96 u96b(u64 base);
-inline u104 u104a(u64 base, u40 addition);
-inline u104 u104b(u64 base);
-inline u112 u112a(u64 base, u48 addition);
-inline u112 u112b(u64 base);
-inline u120 u120a(u64 base, u56 addition);
-inline u120 u120b(u64 base);
-inline u128 u128a(u64 base, u64 addition);
-inline u128 u128b(u64 base);
+u24 u24a(u16 base, u8 addition);
+u24 u24b(u16 base);
+u40 u40a(u32 base, u8 addition);
+u40 u40b(u32 base);
+u48 u48a(u32 base, u16 addition);
+u48 u48b(u32 base);
+u56 u56a(u32 base, u24 addition);
+u56 u56b(u32 base);
+u72 u72a(u64 base, u8 addition);
+u72 u72b(u64 base);
+u80 u80a(u64 base, u16 addition);
+u80 u80b(u64 base);
+u88 u88a(u64 base, u24 addition);
+u88 u88b(u64 base);
+u96 u96a(u64 base, u32 addition);
+u96 u96b(u64 base);
+u104 u104a(u64 base, u40 addition);
+u104 u104b(u64 base);
+u112 u112a(u64 base, u48 addition);
+u112 u112b(u64 base);
+u120 u120a(u64 base, u56 addition);
+u120 u120b(u64 base);
+u128 u128a(u64 base, u64 addition);
+u128 u128b(u64 base);
 
 // float types
+
 typedef float f32;
 typedef double f64;
 
 // pointer types
-typedef u8 p8;
-typedef u16 p16;
-typedef u24 p24;
-typedef u32 p32;
-typedef u40 p40;
-typedef u48 p48;
-typedef u56 p56;
-typedef u64 p64;
-typedef u72 p72;
-typedef u80 p80;
-typedef u88 p88;
-typedef u96 p96;
-typedef u104 p104;
-typedef u112 p112;
-typedef u120 p120;
-typedef u128 p128;
+
+#define p8 u8
+#define p16 u16
+#define p24 u24
+#define p32 u32
+#define p40 u40
+#define p48 u48
+#define p56 u56
+#define p64 u64
+#define p72 u72
+#define p80 u80
+#define p88 u88
+#define p96 u96
+#define p104 u104
+#define p112 u112
+#define p120 u120
+#define p128 u128
 
 #define p24a u24a
 #define p24b u24b

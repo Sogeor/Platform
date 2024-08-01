@@ -2,10 +2,10 @@ org 0x7C00
 bits 16
 
 %if MANAGER_SIZE > 59
-%error "The manager size must be less than or equal to 59"
+%error "The MANAGER_SIZE must be less than or equal to 59"
 %endif
 %if MANAGER_SIZE < 1
-%error "The manager size must be more than or equal to 1"
+%error "The MANAGER_SIZE must be more than or equal to 1"
 %endif
 
 jmp 0:start
@@ -31,20 +31,22 @@ start:
     jnz .die
 
     mov dl, [disk]
-    jmp 0x500
+    jmp 0x600
 .die:
     mov ah, 0xE
     mov bx, 0
-    mov cx, 22
+    mov cx, 19
     mov si, .msg
 .print:
     lodsb
     int 10h
     loop .print
+
+    cli
 .halt:
     hlt
     jmp .halt
-.msg: db "Failed to load manager"
+.msg: db "Initial boot failed"
 
 disk: db 0
 
@@ -53,7 +55,7 @@ dap_size: db 16
 dap_reserved: db 0
 dap_number: dw MANAGER_SIZE
 dap_offset: dw 0
-dap_segment: dw 0x500 / 16
+dap_segment: dw 0x600 / 16
 dap_lba_low: dd 1
 dap_lba_up: dw 0
 dap_lba_extra: dw 0
