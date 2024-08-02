@@ -1,0 +1,3 @@
+BOOT_NAME := boot
+BOOT_PATH := .
+BOOT_OUTPUT := $(BOOT_PATH)/$(BOOT_NAME).img

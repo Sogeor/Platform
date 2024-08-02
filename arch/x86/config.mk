@@ -1,0 +1,3 @@
+ARCH_NAME := x86
+ARCH_PATH := .
+ARCH_OUTPUT := $(ARCH_PATH)/$(ARCH_NAME).img
