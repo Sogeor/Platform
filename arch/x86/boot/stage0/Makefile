@@ -7,6 +7,8 @@ ASFLAGS := $(addprefix -D , $(ARCH_X86_STAGE0_MACROS))
 OBJECTS :=
 
 include config.mk
+ASFLAGS += $(STAGE0_ASFLAGS)
+OBJECT += $(STAGE0_OBJECT)
 
 .PHONY: all clean build
 
@@ -20,4 +22,4 @@ build: $(STAGE0_OUTPUT)
 
 $(STAGE0_OUTPUT): $(OBJECT)
 	@echo "Compiling $^ to $@..."
-	@$(AS) $(ASFLAGS) -o $@ $^
+	$(AS) $(ASFLAGS) -o $@ $^

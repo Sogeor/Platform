@@ -1,13 +1,9 @@
-ARCH_X86_STAGE2_MACROS ?=
+ARCH_X86_STAGE1_MACROS ?=
 ARCH_X86_PATH := ../..
 
 AS := nasm
-CC := i686-elf-gcc
-LD := i686-elf-ld
 
-ASFLAGS := $(addprefix -D , $(ARCH_X86_STAGE2_MACROS))
-CFLAGS := $(addprefix -D , $(ARCH_X86_STAGE2_MACROS))
-LDFLAGS :=
+ASFLAGS := $(addprefix -D , $(ARCH_X86_STAGE1_MACROS))
 OBJECTS :=
 
 include config.mk
@@ -16,24 +12,12 @@ include config.mk
 
 all: clean build
 clean:
-ifneq ($(wildcard $(STAGE2_OUTPUT)),)
-	@echo "Deleting $(STAGE2_OUTPUT)..."
-	@rm -f $(STAGE2_OUTPUT)
+ifneq ($(wildcard $(STAGE1_OUTPUT)),)
+	@echo "Deleting $(STAGE1_OUTPUT)..."
+	@rm -f $(STAGE1_OUTPUT)
 endif
-	@for OBJECT in $(OBJECTS) ; do \
-  		if [ -f "$${OBJECT}" ]; then \
-  			echo "Deleting $${OBJECT}..." ; \
-  			rm -f "$${OBJECT}" ; \
-  		fi ; \
-	done
-build: $(STAGE2_OUTPUT)
+build: $(STAGE1_OUTPUT)
 
-%.bin: %.nasm
+$(STAGE1_OUTPUT): $(OBJECT)
 	@echo "Compiling $^ to $@..."
 	@$(AS) $(ASFLAGS) -o $@ $^
-%.o: %.c
-	@echo "Compiling $^ to $@..."
-	@$(CC) $(CFLAGS) -o $@ $^
-$(STAGE2_OUTPUT): $(OBJECTS)
-	@echo "Linking $^ to $@..."
-	@$(LD) $(LDFLAGS) -o $@ $^
